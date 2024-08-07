@@ -18,5 +18,7 @@ snippets=SnippetType.CAMELCASE,
 
 
 public class AcceptanceTest{
+	
+	
 }
 
