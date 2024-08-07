@@ -26,6 +26,7 @@ public class Signup {
           existingUsernames.add("shahed");
     }
 
+    
     @Given("that the user {string} is not logged in")
     public void thatTheUserIsNotLoggedIn(String username) {
                 this.username = username;

@@ -21,13 +21,16 @@ public class Login {
     private static final Set<String> loggedInUsers = new HashSet<>();
     private static final Map<String, String> userCredentials = new HashMap<>();
 
+    
     static {
         userCredentials.put("tasneem", "password123");
         userCredentials.put("masa", "securepassword");
     }
 
+    
     @Given("that the user {string} is not logged in")
     public void thatTheUserIsNotLoggedIn(String username) {
+    	
         this.username = username;
         loggedInUsers.remove(username);
         loginSuccess = false; 
