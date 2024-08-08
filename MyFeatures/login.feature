@@ -1,7 +1,7 @@
 Feature: Login
 
   Scenario: user login
-    Given that the user "tasneem"is not logged in
+    Given that the user "tasneem" is not logged in
     When user tries to login
     And  password is "123456"
     Then the user login succeeds
@@ -15,7 +15,7 @@ Feature: Login
     And the user is not logged in
 
   Scenario: admin can login
-    Given that the admin"nareman" is not logged in
+    Given that the admin "nareman" is not logged in
     When admin tries to login
     And  password is "654321"
     Then the admin login succeeds
@@ -50,7 +50,7 @@ Feature: Login
     And the supplier is logged in
 
   Scenario: supplier cannot login
-    Given that the supplier  "nuha"is not logged in
+    Given that the supplier "nuhaa" is not logged in
     When supplier tries to login
     And  password is "wrongpassword"
     Then the supplier login fails

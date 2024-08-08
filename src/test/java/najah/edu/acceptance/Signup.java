@@ -26,8 +26,8 @@ public class Signup {
         existingUsernames.add("shahed");
     }
 
-    @Given("that the user {string} is not logged in")
-    public void givenUserIsNotLoggedIn(String username) {
+    @Given("that the user {string} is not sign up")
+    public void givenUserIsNotSignUp(String username) {
         this.username = username;
     }
 
@@ -71,11 +71,11 @@ public class Signup {
 
     @Then("the user is redirected to the login page")
     public void thenUserIsRedirectedToLoginPage() {
-        assertTrue("User should be redirected to the login page", true);
+        assertTrue("User should be redirected to the login page", signupSuccess);
     }
 
     @Then("the user is prompted to try again")
     public void thenUserIsPromptedToTryAgain() {
-        assertTrue("User should be prompted to try again", true);
+        assertFalse("User should be prompted to try again", signupSuccess);
     }
 }

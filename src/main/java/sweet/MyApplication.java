@@ -3,7 +3,9 @@ package sweet;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MyApplication {
 
@@ -21,6 +23,7 @@ public class MyApplication {
     private JTextArea outputArea;
 
     public MyApplication() {
+        loadUserData();  
         frame = new JFrame("Sweet Management System");
         frame.setSize(400, 350);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -117,11 +120,12 @@ public class MyApplication {
 
                 switch (role) {
                     case "User":
-                        userExists = userList.stream().anyMatch(u -> u.getUsername().equals(username));
+                        userExists = userList.stream().anyMatch(u -> u.getName().equals(username));
                         if (userExists) {
                             JOptionPane.showMessageDialog(signUpFrame, "User already exists.");
                         } else {
                             userList.add(new User(username, password, email, country));
+                            saveUserData();
                             JOptionPane.showMessageDialog(signUpFrame, "User registered successfully.");
                         }
                         break;
@@ -131,6 +135,7 @@ public class MyApplication {
                             JOptionPane.showMessageDialog(signUpFrame, "Store Owner already exists.");
                         } else {
                             storeOwnerList.add(new StoreOwner(username, password, email, country));
+                            saveUserData();
                             JOptionPane.showMessageDialog(signUpFrame, "Store Owner registered successfully.");
                         }
                         break;
@@ -140,6 +145,7 @@ public class MyApplication {
                             JOptionPane.showMessageDialog(signUpFrame, "Admin already exists.");
                         } else {
                             adminList.add(new Admin(username, password, email, country));
+                            saveUserData();
                             JOptionPane.showMessageDialog(signUpFrame, "Admin registered successfully.");
                         }
                         break;
@@ -149,6 +155,7 @@ public class MyApplication {
                             JOptionPane.showMessageDialog(signUpFrame, "Material Supplier already exists.");
                         } else {
                             materialSupplierList.add(new MaterialSupplier(username, password, email, country));
+                            saveUserData();
                             JOptionPane.showMessageDialog(signUpFrame, "Material Supplier registered successfully.");
                         }
                         break;
@@ -178,7 +185,7 @@ public class MyApplication {
 
         switch (role) {
             case "User":
-                userExists = userList.stream().anyMatch(u -> u.getUsername().equals(username) && u.getPassword().equals(password));
+                userExists = userList.stream().anyMatch(u -> u.getName().equals(username) && u.getPassword().equals(password));
                 break;
             case "Store Owner":
                 userExists = storeOwnerList.stream().anyMatch(u -> u.getUsername().equals(username) && u.getPassword().equals(password));
@@ -215,6 +222,8 @@ public class MyApplication {
             JButton settingsButton = new JButton("Settings");
             settingsButton.setBounds(150, 100, 100, 25);
             roleFrame.add(settingsButton);
+            
+            
 
             settingsButton.addActionListener(new ActionListener() {
                 @Override
@@ -282,13 +291,13 @@ public class MyApplication {
                     return;
                 }
 
-                // Find and update the user in the list
-                User user = userList.stream().filter(u -> u.getUsername().equals(username)).findFirst().orElse(null);
+                User user = userList.stream().filter(u -> u.getName().equals(username)).findFirst().orElse(null);
                 if (user != null) {
-                    user.setUsername(newUsername);
+                    user.setName(newUsername);
                     user.setPassword(newPassword);
                     user.setEmail(newEmail);
                     user.setCountry(newCountry);
+                    saveUserData();  // Save updated data to file
                     JOptionPane.showMessageDialog(settingsFrame, "User details updated successfully.");
                 } else {
                     JOptionPane.showMessageDialog(settingsFrame, "User not found.");
@@ -338,8 +347,50 @@ public class MyApplication {
         frame.add(roleComboBox);
     }
 
+    private void saveUserData() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("users.txt"))) {
+            for (User user : userList) {
+                writer.println("User|" + user.getName() + "|" + user.getPassword() + "|" + user.getEmail() + "|" + user.getCountry());
+            }
+            for (StoreOwner storeOwner : storeOwnerList) {
+                writer.println("StoreOwner|" + storeOwner.getUsername() + "|" + storeOwner.getPassword() + "|" + storeOwner.getEmail() + "|" + storeOwner.getCountry());
+            }
+            for (Admin admin : adminList) {
+                writer.println("Admin|" + admin.getUsername() + "|" + admin.getPassword() + "|" + admin.getEmail() + "|" + admin.getCountry());
+            }
+            for (MaterialSupplier materialSupplier : materialSupplierList) {
+                writer.println("MaterialSupplier|" + materialSupplier.getUsername() + "|" + materialSupplier.getPassword() + "|" + materialSupplier.getEmail() + "|" + materialSupplier.getCountry());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadUserData() {
+        try (Scanner scanner = new Scanner(new File("users.txt"))) {
+            while (scanner.hasNextLine()) {
+                String[] data = scanner.nextLine().split("\\|");
+                switch (data[0]) {
+                    case "User":
+                        userList.add(new User(data[1], data[2], data[3], data[4]));
+                        break;
+                    case "StoreOwner":
+                        storeOwnerList.add(new StoreOwner(data[1], data[2], data[3], data[4]));
+                        break;
+                    case "Admin":
+                        adminList.add(new Admin(data[1], data[2], data[3], data[4]));
+                        break;
+                    case "MaterialSupplier":
+                        materialSupplierList.add(new MaterialSupplier(data[1], data[2], data[3], data[4]));
+                        break;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            
+        }
+    }
+
     public static void main(String[] args) {
         new MyApplication();
     }
-    
 }

@@ -1,41 +1,45 @@
 package sweet;
 
-public class User {         
-    private String username;
+import java.util.ArrayList;
+import java.util.List;
+
+public class User {
+
+    private String name;
     private String password;
-    private String country;
     private String email;
-    
+    private String country;
+    private List<String> postDescriptions;
+    private List<String> postImageUrls;
 
-    public User(String username, String password, String email, String country) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.country = country;
+    public User(String name, String password, String email, String country) {
+        this.setName(name);
+        this.setPassword(password);
+        this.setEmail(email);
+        this.setCountry(country);
+        this.postDescriptions = new ArrayList<>();
+        this.postImageUrls = new ArrayList<>();
     }
 
-    public String getUsername() {
-        return username;
+    public void createPost(String description, String imageUrl) {
+        postDescriptions.add(description);
+        postImageUrls.add(imageUrl);
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public List<String> getPostDescriptions() {
+        return postDescriptions;
     }
 
-    public String getPassword() {
-        return password;
+    public List<String> getPostImageUrls() {
+        return postImageUrls;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-	public String getCountry() {
-		return country;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setCountry(String country) {
-		this.country = country;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getEmail() {
@@ -45,4 +49,22 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+  
 }
