@@ -15,75 +15,56 @@ public class Login {
 
     private String username;
     private String password;
-    private boolean loginSuccess = false;
-    private boolean loginAttempted = false;
+    private boolean loginSuccess;
     
+    private static final Map<String, String> rolePasswords = new HashMap<>();
     private static final Set<String> loggedInUsers = new HashSet<>();
-    private static final Map<String, String> userCredentials = new HashMap<>();
 
-    
     static {
-        userCredentials.put("tasneem", "password123");
-        userCredentials.put("masa", "securepassword");
+        rolePasswords.put("user", "123456");
+        rolePasswords.put("admin", "654321");
+        rolePasswords.put("owner", "9999");
+        rolePasswords.put("supplier", "9876");
     }
 
-    
-    @Given("that the user {string} is not logged in")
-    public void thatTheUserIsNotLoggedIn(String username) {
-    	
-        this.username = username;
-        loggedInUsers.remove(username);
-        loginSuccess = false; 
-        loginAttempted = false; 
+    @Given("that the {string} is not logged in")
+    public void givenUserIsNotLoggedIn(String role) {
+        this.username = role;
+        loggedInUsers.remove(role);
     }
 
-    @When("user tries to login")
-    public void userTriesToLogin() {
-        loginAttempted = true;
+    @When("{string} tries to login")
+    public void whenUserTriesToLogin(String role) {
+        this.username = role;
+        this.setPassword(rolePasswords.getOrDefault(role, "")); 
     }
 
-    @When("username is {string} and password is {string}")
-    public void usernameIsAndPasswordIs(String username, String password) {
-        this.username = username;
-        this.password = password;
-
-        if (loginAttempted) {
-            String correctPassword = userCredentials.get(username);
-            if (correctPassword != null && correctPassword.equals(password)) {
-                loginSuccess = true;
-                loggedInUsers.add(username);
-            } else {
-                loginSuccess = false;
-            }
-            loginAttempted = false;
+    @When("password is {string}")
+    public void whenPasswordIs(String password) {
+        this.setPassword(password);
+        loginSuccess = rolePasswords.containsValue(password);
+        if (loginSuccess) {
+            loggedInUsers.add(username);
         }
     }
 
-    @Then("the user login succeeds")
-    public void theUserLoginSucceeds() {
-        assertTrue("Expected login to succeed but it failed", loginSuccess);
+    @Then("the {string} login {string}")
+    public void thenUserLogin(String role, String status) {
+        boolean expectedSuccess = status.equals("succeeds");
+        assertEquals("Login success status should match", expectedSuccess, loginSuccess);
     }
 
-    @Then("the user is logged in")
-    public void theUserIsLoggedIn() {
-        assertTrue("Expected user to be logged in but they are not", loggedInUsers.contains(username));
+    @Then("the {string} is {string}")
+    public void thenUserIs(String role, String loginStatus) {
+        boolean expectedLoggedIn = loginStatus.equals("logged in");
+        assertEquals("User login status should match", expectedLoggedIn, loggedInUsers.contains(role));
     }
 
-    @Then("the user login fails")
-    public void theUserLoginFails() {
-        assertFalse("Expected login to fail but it succeeded", loginSuccess);
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    @Then("the user is not logged in")
-    public void theUserIsNotLoggedIn() {
-        assertFalse("Expected user to not be logged in but they are", loggedInUsers.contains(username));
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 }

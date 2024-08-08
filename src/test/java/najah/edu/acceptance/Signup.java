@@ -20,77 +20,62 @@ public class Signup {
     private static final Set<String> usersWithAccounts = new HashSet<>();
 
     static {
-    	  existingUsernames.add("tasneem");
-          existingUsernames.add("nareman");
-          existingUsernames.add("masa");
-          existingUsernames.add("shahed");
+        existingUsernames.add("tasneem");
+        existingUsernames.add("nareman");
+        existingUsernames.add("masa");
+        existingUsernames.add("shahed");
     }
 
-    
     @Given("that the user {string} is not logged in")
-    public void thatTheUserIsNotLoggedIn(String username) {
-                this.username = username;
+    public void givenUserIsNotLoggedIn(String username) {
+        this.username = username;
     }
 
     @Given("they do not have an account in the system")
-    public void theyDoNotHaveAnAccountInTheSystem() {
-    	
-        if (username != null) {
-            usersWithAccounts.remove(username);
-        }
+    public void givenUserDoesNotHaveAccount() {
+        usersWithAccounts.remove(username);
     }
 
     @Given("they do have an account in the system")
-    public void theyDoHaveAnAccountInTheSystem() {
-        if (username != null) {
-            usersWithAccounts.add(username);
-        }
+    public void givenUserHasAccount() {
+        usersWithAccounts.add(username);
     }
 
     @When("the user enters a username {string} and password {string}")
-    public void theUserEntersAUsernameAndPassword(String username, String password) {
+    public void whenUserEntersUsernameAndPassword(String username, String password) {
         this.username = username;
-        this.setPassword(password);
+        this.password = password;
 
         if (existingUsernames.contains(username) || usersWithAccounts.contains(username)) {
             signupSuccess = false;
-         
+            feedbackMessage = "Sign up failed: username already exists";
         } else {
             signupSuccess = true;
-          
+            feedbackMessage = "Sign up successful";
             existingUsernames.add(username);
             usersWithAccounts.add(username);
         }
     }
 
     @Then("the sign up succeeds")
-    public void theSignUpSucceeds() {
+    public void thenSignUpSucceeds() {
         assertTrue(signupSuccess);
         assertEquals("Sign up successful", feedbackMessage);
     }
 
     @Then("the sign up fails")
-    public void theSignUpFails() {
+    public void thenSignUpFails() {
         assertFalse(signupSuccess);
         assertEquals("Sign up failed: username already exists", feedbackMessage);
     }
 
     @Then("the user is redirected to the login page")
-    public void theUserIsRedirectedToTheLoginPage() {
-        assertTrue(true);
+    public void thenUserIsRedirectedToLoginPage() {
+        assertTrue("User should be redirected to the login page", true);
     }
 
     @Then("the user is prompted to try again")
-    public void theUserIsPromptedToTryAgain() {
-         
-        assertTrue(true);
+    public void thenUserIsPromptedToTryAgain() {
+        assertTrue("User should be prompted to try again", true);
     }
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
 }
