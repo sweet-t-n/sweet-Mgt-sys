@@ -12,6 +12,7 @@ public class StoreOwner {
         this.email = email;
         this.country = country;
     }
+    
 
     public String getUsername() {
         return username;

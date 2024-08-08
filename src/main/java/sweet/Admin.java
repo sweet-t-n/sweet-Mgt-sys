@@ -7,6 +7,7 @@ public class Admin {
     private String email;
 
     
+    
     public Admin(String username, String password, String email, String country) {
         this.username = username;
         this.password = password;

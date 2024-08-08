@@ -13,6 +13,7 @@ public class MaterialSupplier {
         this.email = email;
         this.country = country;
     }
+    
 
     public String getUsername() {
         return username;
