@@ -1,1 +1,4 @@
 User|tasneem|12345|tasneem999@gmail.com|nablus
+User|masa|12345|masa@gmail|nablus
+StoreOwner|nareman|98765|nareman@gmail.com|ramallah
+StoreOwner|shahed|12345|shahed@gmail|nablus
