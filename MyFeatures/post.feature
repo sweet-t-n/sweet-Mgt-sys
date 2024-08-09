@@ -16,3 +16,6 @@ Feature: Post and Share
     Given the user "shahed" is logged in
     When the user posts content with description "Delicious chocolate cake" and image ""
     Then the post should fail with an error message "Image cannot be empty"
+
+    
+    

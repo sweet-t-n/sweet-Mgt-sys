@@ -1,6 +1,12 @@
 package sweet;
 
 import javax.swing.*;
+
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
@@ -21,6 +27,8 @@ public class MyApplication {
     private JButton signUpButton;
     private JButton signInButton;
     private JTextArea outputArea;
+    
+    private String imagePath;
 
     public MyApplication() {
         loadUserData();  
@@ -210,20 +218,37 @@ public class MyApplication {
 
     private void openRoleSpecificFrame(String role, String username) {
         JFrame roleFrame = new JFrame(role + " Dashboard");
-        roleFrame.setSize(400, 300);
+        roleFrame.setSize(600, 800); // حجم مبدئي
         roleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         roleFrame.setLayout(null);
 
         JLabel titleLabel = new JLabel("Welcome " + username, SwingConstants.CENTER);
-        titleLabel.setBounds(0, 20, 400, 25);
+        titleLabel.setBounds(0, 20, 600, 25);
         roleFrame.add(titleLabel);
 
         if (role.equals("User")) {
             JButton settingsButton = new JButton("Settings");
-            settingsButton.setBounds(150, 100, 100, 25);
+            settingsButton.setBounds(50, 50, 100, 25);
             roleFrame.add(settingsButton);
             
-            
+            JButton postButton = new JButton("Post and Share");
+            postButton.setBounds(160, 50, 150, 25);
+            roleFrame.add(postButton);
+
+            JPanel imagePanel = new JPanel();
+            imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.Y_AXIS));
+            JScrollPane scrollPane = new JScrollPane(imagePanel);
+            scrollPane.setBounds(50, 100, 500, 600);
+            roleFrame.add(scrollPane);
+
+            loadPosts(username, imagePanel); 
+
+            postButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    openPostFrame(username, imagePanel, roleFrame);
+                }
+            });
 
             settingsButton.addActionListener(new ActionListener() {
                 @Override
@@ -235,6 +260,108 @@ public class MyApplication {
 
         roleFrame.setVisible(true);
     }
+
+    private void openPostFrame(String username, JPanel imagePanel, JFrame roleFrame) {
+        JFrame postFrame = new JFrame("Post and Share");
+        postFrame.setSize(600, 500);
+        postFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        postFrame.setLayout(null);
+
+        JLabel titleLabel = new JLabel("Post your content", SwingConstants.CENTER);
+        titleLabel.setBounds(0, 20, 600, 25);
+        postFrame.add(titleLabel);
+
+        JLabel imageTitleLabel = new JLabel("Image Title:");
+        imageTitleLabel.setBounds(20, 60, 100, 25);
+        postFrame.add(imageTitleLabel);
+
+        JTextField imageTitleField = new JTextField();
+        imageTitleField.setBounds(130, 60, 400, 25);
+        postFrame.add(imageTitleField);
+
+        JLabel descriptionLabel = new JLabel("Description:");
+        descriptionLabel.setBounds(20, 100, 100, 25);
+        postFrame.add(descriptionLabel);
+
+        JTextArea descriptionArea = new JTextArea();
+        descriptionArea.setBounds(130, 100, 400, 100);
+        postFrame.add(descriptionArea);
+
+        JLabel imageLabel = new JLabel("Upload Image:");
+        imageLabel.setBounds(20, 220, 100, 25);
+        postFrame.add(imageLabel);
+
+        JButton uploadButton = new JButton("Choose Image");
+        uploadButton.setBounds(130, 220, 150, 25);
+        postFrame.add(uploadButton);
+
+        JButton postButton = new JButton("Post");
+        postButton.setBounds(250, 420, 100, 25);
+        postFrame.add(postButton);
+
+        final String[] imagePath = {null};
+
+        uploadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                int returnValue = fileChooser.showOpenDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    imagePath[0] = selectedFile.getAbsolutePath();
+                    JOptionPane.showMessageDialog(postFrame, "Image selected: " + imagePath[0]);
+                }
+            }
+        });
+
+        postButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (imagePath[0] != null) {
+                    JLabel imageDisplay = new JLabel();
+                    ImageIcon imageIcon = new ImageIcon(imagePath[0]);
+                    Image image = imageIcon.getImage().getScaledInstance(200, 150, Image.SCALE_SMOOTH);
+                    imageDisplay.setIcon(new ImageIcon(image));
+
+                    JLabel imageDescription = new JLabel(descriptionArea.getText());
+
+                    JButton deleteButton = new JButton("Delete");
+                    deleteButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            imagePanel.remove(imageDisplay);
+                            imagePanel.remove(imageDescription);
+                            imagePanel.remove(deleteButton);
+                            imagePanel.revalidate();
+                            imagePanel.repaint();
+                            deletePost(username, imagePath[0], descriptionArea.getText());
+                        }
+                    });
+
+                    imagePanel.add(imageDisplay);
+                    imagePanel.add(imageDescription);
+                    imagePanel.add(deleteButton);
+
+                    savePost(username, imagePath[0], descriptionArea.getText());
+
+                    roleFrame.setSize(roleFrame.getWidth(), roleFrame.getHeight() + 200);
+                    roleFrame.revalidate();
+                    roleFrame.repaint();
+
+                    postFrame.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(postFrame, "Please select an image to post.");
+                }
+            }
+        });
+
+        postFrame.setVisible(true);
+    }
+
+
+
+
+
 
     private void openSettingsFrame(String username) {
         JFrame settingsFrame = new JFrame("Account Settings");
@@ -309,7 +436,100 @@ public class MyApplication {
 
         settingsFrame.setVisible(true);
     }
+    
+    
+    private void loadPosts(String username, JPanel imagePanel) {
+        imagePanel.removeAll(); // أزل كل المكونات الحالية قبل تحميل جديدة
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(username + "_posts.txt"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                String imagePath = parts[0];
+                String description = parts[1];
 
+                JLabel imageDisplay = new JLabel();
+                ImageIcon imageIcon = new ImageIcon(imagePath);
+                Image image = imageIcon.getImage().getScaledInstance(200, 150, Image.SCALE_SMOOTH);
+                imageDisplay.setIcon(new ImageIcon(image));
+
+                JLabel imageDescription = new JLabel(description);
+
+                JButton deleteButton = new JButton("Delete");
+                deleteButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        imagePanel.remove(imageDisplay);
+                        imagePanel.remove(imageDescription);
+                        imagePanel.remove(deleteButton);
+                        imagePanel.revalidate();
+                        imagePanel.repaint();
+                        deletePost(username, imagePath, description);
+                    }
+                });
+
+                imagePanel.add(imageDisplay);
+                imagePanel.add(imageDescription);
+                imagePanel.add(deleteButton);
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    
+    private void savePost(String username, String imagePath, String description) {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(username + "_posts.txt", true));
+            writer.write(imagePath + "|" + description);
+            writer.newLine();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    
+    private void deletePost(String username, String imagePath, String description) {
+        try {
+            File inputFile = new File(username + "_posts.txt");
+            File tempFile = new File(username + "_posts_temp.txt");
+
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (!line.equals(imagePath + "|" + description)) {
+                    writer.write(line);
+                    writer.newLine();
+                }
+            }
+            reader.close();
+            writer.close();
+
+            if (!inputFile.delete()) {
+                System.out.println("Could not delete file");
+            }
+            if (!tempFile.renameTo(inputFile)) {
+                System.out.println("Could not rename file");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    
+   
+
+    
+    
+    
+    
     private void addCommonComponents(JFrame frame, JTextField usernameField, JPasswordField passwordField, JTextField emailField, JTextField countryField, JComboBox<String> roleComboBox) {
         JLabel usernameLabel = new JLabel("Username:");
         usernameLabel.setBounds(20, 20, 150, 25);
