@@ -1,0 +1,6 @@
+Store1|ProductA|20|15.99
+Store1|ProductB|10|25.99
+Store2|ProductA|5|15.99
+Store2|ProductC|30|9.99
+Store3|ProductD|50|45.99
+Store3|ProductA|15|15.99

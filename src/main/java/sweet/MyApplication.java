@@ -5,9 +5,6 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.Color;
-import javax.swing.BorderFactory;
-
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -18,9 +15,13 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class MyApplication {
 
@@ -203,12 +204,14 @@ public class MyApplication {
         switch (role) {
             case "User":
                 userExists = userList.stream().anyMatch(u -> u.getName().equals(username) && u.getPassword().equals(password));
+                
                 break;
             case "Store Owner":
                 userExists = storeOwnerList.stream().anyMatch(u -> u.getUsername().equals(username) && u.getPassword().equals(password));
                 break;
             case "Admin":
                 userExists = adminList.stream().anyMatch(u -> u.getUsername().equals(username) && u.getPassword().equals(password));
+                openAdminDashboard();
                 break;
             case "Material Supplier":
                 userExists = materialSupplierList.stream().anyMatch(u -> u.getUsername().equals(username) && u.getPassword().equals(password));
@@ -224,18 +227,612 @@ public class MyApplication {
             outputArea.setText("Account not found. Please check your credentials.");
         }
     }
+    private void openAdminDashboard() {
+        JFrame adminFrame = new JFrame("Admin Dashboard");
+        adminFrame.setSize(400, 300);
+        adminFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        adminFrame.setLayout(null);
 
-    private void openRoleSpecificFrame(String role, String username) {
-        JFrame roleFrame = new JFrame(role + " Dashboard");
-        roleFrame.setSize(600, 800); // حجم مبدئي
-        roleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        roleFrame.setLayout(null);
+        JLabel welcomeLabel = new JLabel("Welcome Admin", SwingConstants.CENTER);
+        welcomeLabel.setBounds(0, 20, 400, 25);
+        adminFrame.add(welcomeLabel);
 
-        JLabel titleLabel = new JLabel("Welcome " + username, SwingConstants.CENTER);
+        JButton userManagementButton = new JButton("User Management");
+        userManagementButton.setBounds(50, 80, 150, 25);
+        adminFrame.add(userManagementButton);
+
+        JButton monitoringReportingButton = new JButton("Monitoring and Reporting");
+        monitoringReportingButton.setBounds(50, 120, 250, 25);
+        adminFrame.add(monitoringReportingButton);
+
+        JButton contentManagementButton = new JButton("Content Management");
+        contentManagementButton.setBounds(50, 160, 200, 25);
+        adminFrame.add(contentManagementButton);
+
+        userManagementButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Open User Management frame or functionality
+            	opencontentManagementFrame();   
+            }
+        });
+
+        monitoringReportingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Open Monitoring and Reporting frame or functionality
+            	openMonitoringAndReportingFrame();
+            }
+        });
+
+        contentManagementButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Open Content Management frame or functionality
+              openContentManagementFrame();
+            	         }
+        });
+
+        adminFrame.setVisible(true);
+    }
+    private void openContentManagementFrame() {
+        JFrame contentFrame = new JFrame("Content Management");
+        contentFrame.setSize(400, 300);
+        contentFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        contentFrame.setLayout(null);
+
+        JButton manageRecipesAndPostsButton = new JButton("Manage Recipes and Posts");
+        manageRecipesAndPostsButton.setBounds(50, 80, 200, 25);
+        contentFrame.add(manageRecipesAndPostsButton);
+
+        JButton manageFeedbackButton = new JButton("Manage Feedback");
+        manageFeedbackButton.setBounds(50, 120, 200, 25);
+        contentFrame.add(manageFeedbackButton);
+
+        // Action Listeners for the new buttons
+        manageRecipesAndPostsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Open Manage Recipes and Posts functionality
+                // You can add the specific functionality here
+            	openBrowseAllContentFrame(true);
+            }
+        });
+
+        manageFeedbackButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Open Manage Feedback functionality
+                // You can add the specific functionality here
+                JOptionPane.showMessageDialog(contentFrame, "Manage Feedback functionality.");
+            }
+        });
+
+        contentFrame.setVisible(true);
+    }
+   
+    private void opencontentManagementFrame() {
+    	JFrame contentFrame = new JFrame("user Management");
+    	contentFrame.setSize(600, 400);
+    	contentFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    	contentFrame.setLayout(null);
+
+        JLabel titlel = new JLabel("userManagement", SwingConstants.CENTER);
+        titlel.setBounds(0, 20, 600, 25);
+        contentFrame.add(titlel);
+
+        JButton ownersButton = new JButton("Management store owners");
+      ownersButton.setBounds(50, 60, 250, 25);
+        contentFrame.add(ownersButton);
+
+        JButton suppliersButton = new JButton("Management raw material suppliers");
+        suppliersButton.setBounds(50, 100, 250, 25);
+        contentFrame.add(suppliersButton);
+        ownersButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	Managementstoreowners();
+            }
+        });
+
+        suppliersButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	Managementrawmaterialsuppliers();
+            }
+        });
+    	
+        contentFrame.setVisible(true);
+    }
+    private void openFrame() {
+    	JFrame contentFrame1 = new JFrame(" Management");
+    	contentFrame1.setSize(600, 400);
+    	contentFrame1.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    	contentFrame1.setLayout(null);
+
+    	 JLabel usernameLabel = new JLabel("Username:");
+         usernameLabel.setBounds(20, 20, 150, 25);
+         contentFrame1.add(usernameLabel);
+
+         JTextField usernameField1 = new JTextField();
+         usernameField1.setBounds(180, 20, 200, 25);
+         contentFrame1.add(usernameField1);
+
+        JButton add = new JButton("add");
+        add.setBounds(50, 60, 250, 25);
+          contentFrame1.add(add);
+
+        JButton remove = new JButton("remove");
+        remove.setBounds(50, 100, 250, 25);
+        contentFrame1.add(remove);
+       
+        add.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // إنشاء إطار جديد لإدخال البيانات
+                    JFrame inputFrame = new JFrame("Add User");
+                    inputFrame.setSize(400, 300);
+                    inputFrame.setLayout(null);
+
+                    // Label و TextField لإدخال الاسم
+                    JLabel nameLabel = new JLabel("Owner Name:");
+                    nameLabel.setBounds(20, 20, 150, 25);
+                    inputFrame.add(nameLabel);
+
+                    JTextField nameField = new JTextField();
+                    nameField.setBounds(180, 20, 200, 25);
+                    inputFrame.add(nameField);
+
+                    JLabel passwordLabel = new JLabel("Password:");
+                    passwordLabel.setBounds(20, 60, 150, 25);
+                    inputFrame.add(passwordLabel);
+
+                    JTextField passwordField = new JTextField();
+                    passwordField.setBounds(180, 60, 200, 25);
+                    inputFrame.add(passwordField);
+
+                    JLabel emailLabel = new JLabel("Email:");
+                    emailLabel.setBounds(20, 100, 150, 25);
+                    inputFrame.add(emailLabel);
+
+                    JTextField emailField = new JTextField();
+                    emailField.setBounds(180, 100, 200, 25);
+                    inputFrame.add(emailField);
+
+                    JLabel cityLabel = new JLabel("City:");
+                    cityLabel.setBounds(20, 140, 150, 25);
+                    inputFrame.add(cityLabel);
+
+                    JTextField cityField = new JTextField();
+                    cityField.setBounds(180, 140, 200, 25);
+                    inputFrame.add(cityField);
+
+                    JButton submitButton = new JButton("Submit");
+                    submitButton.setBounds(150, 200, 100, 25);
+                    inputFrame.add(submitButton);
+
+                    submitButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            String name = nameField.getText().trim();
+                            String password = passwordField.getText().trim();
+                            String email = emailField.getText().trim();
+                            String city = cityField.getText().trim();
+
+                            if (!name.isEmpty() && !password.isEmpty() && !email.isEmpty() && !city.isEmpty()) {
+                                String userDetails = "owner|" + name + "|" + password + "|" + email + "|" + city;
+
+                                try (BufferedWriter writer = new BufferedWriter(new FileWriter("users.txt", true))) {
+                                    writer.write(userDetails);
+                                    writer.newLine();
+                                    JOptionPane.showMessageDialog(inputFrame, "User added successfully.");
+                                } catch (IOException ioException) {
+                                    JOptionPane.showMessageDialog(inputFrame, "Error writing to file.");
+                                }
+
+                                inputFrame.dispose(); 
+                            } else {
+                                JOptionPane.showMessageDialog(inputFrame, "Please fill in all fields.");
+                            }
+                        }
+                    });
+
+                    inputFrame.setVisible(true); 
+                }
+            });
+        remove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String usernameToDelete = usernameField1.getText().trim(); 
+
+                File file = new File("users.txt");
+                if (file.exists()) {
+                    try {
+                        List<String> lines = Files.readAllLines(file.toPath());
+                        List<String> updatedLines = lines.stream()
+                                .filter(line -> !line.startsWith("owner|" + usernameToDelete + "|"))
+                                .collect(Collectors.toList());
+
+                        Files.write(file.toPath(), updatedLines);
+
+                        JOptionPane.showMessageDialog(contentFrame1, "owner deleted successfully.");
+                    } catch (IOException ioException) {
+                        JOptionPane.showMessageDialog(contentFrame1, "Error reading or writing to file.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(contentFrame1, "File does not exist.");
+                }
+            }
+        });
+     
+           
+
+
+        contentFrame1.setVisible(true);
+    }
+    private void openFrame1() {
+    	JFrame contentFrame11 = new JFrame(" Management");
+    	contentFrame11.setSize(600, 400);
+    	contentFrame11.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    	contentFrame11.setLayout(null);
+
+    	 JLabel usernameLabel1 = new JLabel("Username:");
+         usernameLabel1.setBounds(20, 20, 150, 25);
+         contentFrame11.add(usernameLabel1);
+
+         JTextField usernameField11 = new JTextField();
+         usernameField11.setBounds(180, 20, 200, 25);
+         contentFrame11.add(usernameField11);
+
+        JButton add1 = new JButton("add");
+        add1.setBounds(50, 60, 250, 25);
+          contentFrame11.add(add1);
+
+        JButton remove1 = new JButton("remove");
+        remove1.setBounds(50, 100, 250, 25);
+        contentFrame11.add(remove1);
+       
+        add1.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // إنشاء إطار جديد لإدخال البيانات
+                    JFrame inputFrame1 = new JFrame("Add User");
+                    inputFrame1.setSize(400, 300);
+                    inputFrame1.setLayout(null);
+
+                    // Label و TextField لإدخال الاسم
+                    JLabel nameLabel1 = new JLabel("Owner Name:");
+                    nameLabel1.setBounds(20, 20, 150, 25);
+                    inputFrame1.add(nameLabel1);
+
+                    JTextField nameField1 = new JTextField();
+                    nameField1.setBounds(180, 20, 200, 25);
+                    inputFrame1.add(nameField1);
+
+                    JLabel passwordLabel1 = new JLabel("Password:");
+                    passwordLabel1.setBounds(20, 60, 150, 25);
+                    inputFrame1.add(passwordLabel1);
+
+                    JTextField passwordField1 = new JTextField();
+                    passwordField1.setBounds(180, 60, 200, 25);
+                    inputFrame1.add(passwordField1);
+
+                    JLabel emailLabel = new JLabel("Email:");
+                    emailLabel.setBounds(20, 100, 150, 25);
+                    inputFrame1.add(emailLabel);
+
+                    JTextField emailField1 = new JTextField();
+                    emailField1.setBounds(180, 100, 200, 25);
+                    inputFrame1.add(emailField1);
+
+                    JLabel cityLabel1 = new JLabel("City:");
+                    cityLabel1.setBounds(20, 140, 150, 25);
+                    inputFrame1.add(cityLabel1);
+
+                    JTextField cityField1 = new JTextField();
+                    cityField1.setBounds(180, 140, 200, 25);
+                    inputFrame1.add(cityField1);
+
+                    JButton submitButton1 = new JButton("Submit");
+                    submitButton1.setBounds(150, 200, 100, 25);
+                    inputFrame1.add(submitButton1);
+
+                    submitButton1.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            String name = nameField1.getText().trim();
+                            String password = passwordField1.getText().trim();
+                            String email = emailField1.getText().trim();
+                            String city = cityField1.getText().trim();
+
+                            if (!name.isEmpty() && !password.isEmpty() && !email.isEmpty() && !city.isEmpty()) {
+                            	
+                                String userDetails = "suppliers|" + name + "|" + password + "|" + email + "|" + city;
+
+                                try (BufferedWriter writer = new BufferedWriter(new FileWriter("users.txt", true))) {
+                                    writer.write(userDetails);
+                                    writer.newLine();
+                                    JOptionPane.showMessageDialog(inputFrame1, "User added successfully.");
+                                } catch (IOException ioException) {
+                                    JOptionPane.showMessageDialog(inputFrame1, "Error writing to file.");
+                                }
+
+                                inputFrame1.dispose(); 
+                            } else {
+                                JOptionPane.showMessageDialog(inputFrame1, "Please fill in all fields.");
+                            }
+                        }
+                    });
+
+                    inputFrame1.setVisible(true); 
+                }
+            });
+        remove1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String usernameToDelete = usernameField11.getText().trim(); 
+
+                File file = new File("users.txt");
+                if (file.exists()) {
+                    try {
+                        List<String> lines = Files.readAllLines(file.toPath());
+                        List<String> updatedLines = lines.stream()
+                                .filter(line -> !line.startsWith("suppliers|" + usernameToDelete + "|"))
+                                .collect(Collectors.toList());
+
+                        Files.write(file.toPath(), updatedLines);
+
+                        JOptionPane.showMessageDialog(contentFrame11, "owner deleted successfully.");
+                    } catch (IOException ioException) {
+                        JOptionPane.showMessageDialog(contentFrame11, "Error reading or writing to file.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(contentFrame11, "File does not exist.");
+                }
+            }
+        });
+     
+           
+
+
+        contentFrame11.setVisible(true);
+    }
+    private void Managementstoreowners() {
+        // Simulated financial report generation
+    	openFrame();
+        // Add code to generate actual financial reports
+    }
+
+    private void Managementrawmaterialsuppliers() {
+        // Simulated financial report generation
+    	openFrame1();
+        // Add code to generate actual financial reports
+    }
+
+    private void openMonitoringAndReportingFrame() {
+        JFrame reportFrame = new JFrame("Monitoring and Reporting");
+        reportFrame.setSize(600, 400);
+        reportFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        reportFrame.setLayout(null);
+
+        JLabel titleLabel = new JLabel("Monitoring and Reporting", SwingConstants.CENTER);
         titleLabel.setBounds(0, 20, 600, 25);
-        roleFrame.add(titleLabel);
+        reportFrame.add(titleLabel);
+
+        JButton profitsButton = new JButton("Generate Financial Reports");
+        profitsButton.setBounds(50, 60, 250, 25);
+        reportFrame.add(profitsButton);
+
+        JButton bestSellingButton = new JButton("Identify Best-Selling Products");
+        bestSellingButton.setBounds(50, 100, 250, 25);
+        reportFrame.add(bestSellingButton);
+
+        JButton cityStatsButton = new JButton("User Statistics by City");
+        cityStatsButton.setBounds(50, 140, 250, 25);
+        reportFrame.add(cityStatsButton);
+
+        profitsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                generateFinancialReports();
+            }
+        });
+
+        bestSellingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                identifyBestSellingProducts();
+            }
+        });
+
+        cityStatsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayUserStatsByCity();
+            }
+        });
+
+        reportFrame.setVisible(true);
+    }
+    private void generateFinancialReports() {
+        Map<String, Double> storeProfits = new HashMap<>();
+        
+        // Read sales data from a file
+        try (BufferedReader reader = new BufferedReader(new FileReader("sale.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                String store = parts[0];
+                double amount = Double.parseDouble(parts[2]);
+
+                storeProfits.put(store, storeProfits.getOrDefault(store, 0.0) + amount);
+            }
+
+            // Display the report
+            displayReport(storeProfits);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error reading sales data file.");
+            e.printStackTrace();
+        }
+    }
+    
+    private void displayReport(Map<String, Double> storeProfits) {
+        // Create a new JFrame to display the report
+        JFrame reportFrame = new JFrame("Financial Report");
+        reportFrame.setSize(400, 300);
+        reportFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        reportFrame.setLayout(new BoxLayout(reportFrame.getContentPane(), BoxLayout.Y_AXIS));
+
+        // Display the report data
+        JTextArea reportArea = new JTextArea();
+        reportArea.setEditable(false);
+        
+        StringBuilder reportContent = new StringBuilder("Store Profits:\n");
+        for (Map.Entry<String, Double> entry : storeProfits.entrySet()) {
+            reportContent.append("Store: ").append(entry.getKey())
+                         .append(", Profit: ").append(entry.getValue()).append("\n");
+        }
+        
+        reportArea.setText(reportContent.toString());
+        JScrollPane scrollPane = new JScrollPane(reportArea);
+        reportFrame.add(scrollPane);
+
+        reportFrame.setVisible(true);
+    }
+    private void displayUserStatsByCity() {
+        Map<String, Integer> cityStats = new HashMap<>();
+        
+        // قراءة بيانات المستخدمين من الملف
+        try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length >= 5 && "User".equals(parts[0])) {  // التأكد من أن السطر يحتوي على التصنيف الصحيح
+                    String city = parts[4];  // المدينة في الجزء 4 من السطر
+                    cityStats.put(city, cityStats.getOrDefault(city, 0) + 1);
+                }
+            }
+            
+            // عرض الإحصائيات في نافذة جديدة
+            JFrame statsFrame = new JFrame("User Statistics by City");
+            statsFrame.setSize(400, 300);
+            statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            statsFrame.setLayout(new BoxLayout(statsFrame.getContentPane(), BoxLayout.Y_AXIS));
+            
+            JTextArea statsArea = new JTextArea();
+            statsArea.setEditable(false);
+            
+            StringBuilder reportContent = new StringBuilder("User Statistics by City:\n");
+            for (Map.Entry<String, Integer> entry : cityStats.entrySet()) {
+                reportContent.append("City: ").append(entry.getKey())
+                             .append(", Number of Users: ").append(entry.getValue())
+                             .append("\n");
+            }
+            
+            statsArea.setText(reportContent.toString());
+            JScrollPane scrollPane = new JScrollPane(statsArea);
+            statsFrame.add(scrollPane);
+            
+            statsFrame.setVisible(true);
+            
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error reading users data file.");
+            e.printStackTrace();
+        }
+    }
+
+
+    private void identifyBestSellingProducts() {
+        Map<String, Map<String, Integer>> storeProductSales = new HashMap<>();
+        Map<String, String[]> productDetails = new HashMap<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("sale.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                String store = parts[0];
+                String product = parts[1];
+                int quantity = Integer.parseInt(parts[2]);
+                String price = parts[3];
+
+                storeProductSales
+                    .computeIfAbsent(store, k -> new HashMap<>())
+                    .put(product, storeProductSales.get(store).getOrDefault(product, 0) + quantity);
+
+                // Store the product details (product name and price)
+                productDetails.put(product, new String[]{product, price});
+            }
+
+            displayBestSellingProducts(storeProductSales, productDetails);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error reading sales data file.");
+            e.printStackTrace();
+        }
+    }
+
+    private void displayBestSellingProducts(Map<String, Map<String, Integer>> storeProductSales, Map<String, String[]> productDetails) {
+        JFrame bestSellingFrame = new JFrame("Best-Selling Products");
+        bestSellingFrame.setSize(400, 300);
+        bestSellingFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        bestSellingFrame.setLayout(new BorderLayout());
+
+        JTextArea bestSellingArea = new JTextArea();
+        bestSellingArea.setEditable(false);
+
+        StringBuilder reportContent = new StringBuilder("Best-Selling Products by Store:\n");
+        for (Map.Entry<String, Map<String, Integer>> storeEntry : storeProductSales.entrySet()) {
+            String store = storeEntry.getKey();
+            Map<String, Integer> productSales = storeEntry.getValue();
+
+            String bestSellingProduct = null;
+            int maxSales = 0;
+
+            for (Map.Entry<String, Integer> productEntry : productSales.entrySet()) {
+                if (productEntry.getValue() > maxSales) {
+                    maxSales = productEntry.getValue();
+                    bestSellingProduct = productEntry.getKey();
+                }
+            }
+
+            // Display the best-selling product first
+            String[] bestProductDetails = productDetails.get(bestSellingProduct);
+            reportContent.append("Store: ").append(store)
+                         .append("\nBest-Selling Product: ").append(bestProductDetails[0])
+                         .append(" (Best-Selling)")
+                         .append("\nQuantity Sold: ").append(maxSales)
+                         .append("\nPrice: ").append(bestProductDetails[1])
+                         .append("\n---------------------------\n");
+
+            // Display the rest of the products
+            for (Map.Entry<String, Integer> productEntry : productSales.entrySet()) {
+                if (!productEntry.getKey().equals(bestSellingProduct)) {
+                    String[] otherProductDetails = productDetails.get(productEntry.getKey());
+                    reportContent.append("Product: ").append(otherProductDetails[0])
+                                 .append("\nQuantity Sold: ").append(productEntry.getValue())
+                                 .append("\nPrice: ").append(otherProductDetails[1])
+                                 .append("\n---------------------------\n");
+                }
+            }
+        }
+
+        bestSellingArea.setText(reportContent.toString());
+        bestSellingFrame.add(new JScrollPane(bestSellingArea), BorderLayout.CENTER);
+        bestSellingFrame.setVisible(true);
+    }
+
+    
+    private void openRoleSpecificFrame(String role, String username) {
+      
 
         if (role.equals("User")) {
+        	  JFrame roleFrame = new JFrame(role + " Dashboard");
+              roleFrame.setSize(600, 800); // حجم مبدئي
+              roleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+              roleFrame.setLayout(null);
+
+              JLabel titleLabel = new JLabel("Welcome " + username, SwingConstants.CENTER);
+              titleLabel.setBounds(0, 20, 600, 25);
+              roleFrame.add(titleLabel);
             JButton settingsButton = new JButton("Settings");
             settingsButton.setBounds(50, 50, 100, 25);
             roleFrame.add(settingsButton);
@@ -284,10 +881,20 @@ public class MyApplication {
             browseButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    openBrowseAllContentFrame();
+                    openBrowseAllContentFrame(false);
                 }
             });
+            roleFrame.setVisible(true);
+
         } else if (role.equals("Store Owner")) {
+        	  JFrame roleFrame = new JFrame(role + " Dashboard");
+              roleFrame.setSize(600, 800); // حجم مبدئي
+              roleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+              roleFrame.setLayout(null);
+
+              JLabel titleLabel = new JLabel("Welcome " + username, SwingConstants.CENTER);
+              titleLabel.setBounds(0, 20, 600, 25);
+              roleFrame.add(titleLabel);
             JButton addProductButton = new JButton("Add Product");
             addProductButton.setBounds(50, 50, 150, 25);
             roleFrame.add(addProductButton);
@@ -304,14 +911,18 @@ public class MyApplication {
                     openAddProductFrame(username, productPanel);
                 }
             });
-        }
+            roleFrame.setVisible(true);
 
-        roleFrame.setVisible(true);
+        }
+        else if (role.equals("Admin")) {        
+        	openAdminDashboard();
+}
+
     }
 
     ///////////////////////////////////////////////////////////////////////
     
-    private void openBrowseAllContentFrame() {
+    private void openBrowseAllContentFrame(boolean isAdmin) {
         JFrame browseFrame = new JFrame("Browse All Content");
         browseFrame.setSize(800, 600); 
         browseFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -348,7 +959,7 @@ public class MyApplication {
         browseFrame.add(scrollPane);
 
         // Load content initially
-        loadAllContent(contentPanel, "", "All");
+        loadAllContent(contentPanel, "", "All", isAdmin);
 
         // Add action listener to the search button
         searchButton.addActionListener(new ActionListener() {
@@ -356,69 +967,208 @@ public class MyApplication {
             public void actionPerformed(ActionEvent e) {
                 String searchQuery = searchField.getText();
                 String dietaryNeeds = (String) dietaryFilterComboBox.getSelectedItem();
-                loadAllContent(contentPanel, searchQuery, dietaryNeeds);
+                loadAllContent(contentPanel, searchQuery, dietaryNeeds, isAdmin);
             }
         });
 
         browseFrame.setVisible(true);
     }
-
-    private void loadAllContent(JPanel panel, String searchQuery, String dietaryNeeds) {
+    private void loadAllContent(JPanel panel, String searchQuery, String dietaryNeeds, boolean isAdmin) {
         panel.removeAll(); // Clear existing content
 
         try (BufferedReader reader = new BufferedReader(new FileReader("content.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("\\|");
-                if (parts.length == 3) { // نحتاج 3 أجزاء فقط: username, imagePath, description
+                if (parts.length == 3) { // Ensure the line has the correct format
                     String username = parts[0];
                     String imagePath = parts[1];
                     String description = parts[2];
 
-                    // تحقق من تطابق النص المدخل مع وصف الحلوى
                     boolean matchesSearchQuery = description.toLowerCase().contains(searchQuery.toLowerCase());
-
-                    // تحقق من تطابق معايير الحمية (إذا كانت هناك معايير محددة في الوصف، أضف تحقق هنا)
                     boolean matchesDietaryNeeds = dietaryNeeds.equals("All") || description.toLowerCase().contains(dietaryNeeds.toLowerCase());
 
-                    // تحقق من تطابق جميع المعايير
                     if (matchesSearchQuery && matchesDietaryNeeds) {
                         JPanel contentItemPanel = new JPanel();
                         contentItemPanel.setLayout(new BoxLayout(contentItemPanel, BoxLayout.Y_AXIS));
-                        contentItemPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // فاصل حول كل عنصر
+                        contentItemPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Padding around each item
 
-                        // عرض اسم المستخدم
                         JLabel usernameLabel = new JLabel("User: " + username);
                         contentItemPanel.add(usernameLabel);
 
-                        // عرض اسم الحلو (إذا كان هناك حقل خاص لاسم الحلو، أضفه هنا. حاليًا نستخدم الوصف كاسم الحلو)
                         JLabel sweetNameLabel = new JLabel("Sweet Name: " + description);
                         contentItemPanel.add(sweetNameLabel);
 
-                        // عرض الصورة
                         ImageIcon imageIcon = new ImageIcon(imagePath);
-                        Image image = imageIcon.getImage().getScaledInstance(200, 150, Image.SCALE_SMOOTH); // حجم أصغر
+                        Image image = imageIcon.getImage().getScaledInstance(200, 150, Image.SCALE_SMOOTH);
                         JLabel imageLabel = new JLabel(new ImageIcon(image));
                         contentItemPanel.add(imageLabel);
 
-                        // عرض الوصف
                         JLabel descriptionLabel = new JLabel("Description: " + description);
                         contentItemPanel.add(descriptionLabel);
 
-                        // إضافة المحتوى إلى اللوحة
+                        if (isAdmin) {
+                            JButton deleteButton = new JButton("Delete");
+                            deleteButton.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    // Confirm delete
+                                    int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this item?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+                                    if (confirm == JOptionPane.YES_OPTION) {
+                                    	deleteContent(username, imagePath, description);
+                                        loadAllContent(panel, searchQuery, dietaryNeeds, isAdmin); // Reload content
+                                    }
+                                }
+                            });
+                            contentItemPanel.add(deleteButton);
+
+                            JButton updateButton = new JButton("Update");
+                            updateButton.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    // Implement update functionality here
+                                    openUpdateFrame(username, imagePath, description);
+
+                                }
+                            });
+                            contentItemPanel.add(updateButton);
+
+                                             }
+
                         panel.add(contentItemPanel);
-                        panel.add(Box.createRigidArea(new Dimension(0, 20))); // فاصل بين العناصر
+                        panel.add(Box.createRigidArea(new Dimension(0, 20))); // Space between items
                     }
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace(); // Handle the exception
+            e.printStackTrace(); // Handle exceptions
         }
 
         panel.revalidate(); // Refresh the panel to show new content
         panel.repaint();
     }
+    private void openUpdateFrame(String oldUsername, String oldImagePath, String oldDescription) {
+        JFrame updateFrame = new JFrame("Update Content");
+        updateFrame.setSize(400, 300);
+        updateFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        updateFrame.setLayout(null);
 
+        JLabel usernameLabel = new JLabel("User:");
+        usernameLabel.setBounds(20, 20, 80, 25);
+        updateFrame.add(usernameLabel);
+
+        JTextField usernameField = new JTextField(oldUsername);
+        usernameField.setBounds(100, 20, 250, 25);
+        updateFrame.add(usernameField);
+
+        JLabel imagePathLabel = new JLabel("Image Path:");
+        imagePathLabel.setBounds(20, 60, 80, 25);
+        updateFrame.add(imagePathLabel);
+
+        JTextField imagePathField = new JTextField(oldImagePath);
+        imagePathField.setBounds(100, 60, 250, 25);
+        updateFrame.add(imagePathField);
+
+        JLabel descriptionLabel = new JLabel("Description:");
+        descriptionLabel.setBounds(20, 100, 80, 25);
+        updateFrame.add(descriptionLabel);
+
+        JTextField descriptionField = new JTextField(oldDescription);
+        descriptionField.setBounds(100, 100, 250, 25);
+        updateFrame.add(descriptionField);
+
+        JButton saveButton = new JButton("Save");
+        saveButton.setBounds(150, 150, 100, 25);
+        updateFrame.add(saveButton);
+
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String newUsername = usernameField.getText();
+                String newImagePath = imagePathField.getText();
+                String newDescription = descriptionField.getText();
+
+                updateContent(oldUsername, oldImagePath, oldDescription, newUsername, newImagePath, newDescription);
+                updateFrame.dispose(); // Close the update frame
+            }
+        });
+
+        updateFrame.setVisible(true);
+    }
+    private void updateContent(String oldUsername, String oldImagePath, String oldDescription, String newUsername, String newImagePath, String newDescription) {
+        File inputFile = new File("content.txt");
+        File tempFile = new File("tempContent.txt");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length == 3) {
+                    String fileUsername = parts[0];
+                    String fileImagePath = parts[1];
+                    String fileDescription = parts[2];
+
+                    // Update line if it matches the old content
+                    if (fileUsername.equals(oldUsername) && fileImagePath.equals(oldImagePath) && fileDescription.equals(oldDescription)) {
+                        writer.write(newUsername + "|" + newImagePath + "|" + newDescription);
+                    } else {
+                        writer.write(line);
+                    }
+                    writer.newLine();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle exceptions
+        }
+
+        // Replace the original file with the updated file
+        if (!inputFile.delete()) {
+            System.out.println("Could not delete file");
+            return;
+        }
+        if (!tempFile.renameTo(inputFile)) {
+            System.out.println("Could not rename file");
+        }
+    }
+
+
+    private void deleteContent(String username, String imagePath, String description) {
+        File inputFile = new File("content.txt");
+        File tempFile = new File("tempContent.txt");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length == 3) {
+                    String fileUsername = parts[0];
+                    String fileImagePath = parts[1];
+                    String fileDescription = parts[2];
+
+                    // Only write lines that do not match the content to be deleted
+                    if (!(fileUsername.equals(username) && fileImagePath.equals(imagePath) && fileDescription.equals(description))) {
+                        writer.write(line);
+                        writer.newLine();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle exceptions
+        }
+
+        // Replace the original file with the updated file
+        if (!inputFile.delete()) {
+            System.out.println("Could not delete file");
+            return;
+        }
+        if (!tempFile.renameTo(inputFile)) {
+            System.out.println("Could not rename file");
+        }
+    }
 
 //////////////////////////////////////////////////////////////////////////////////
     private void openAddProductFrame(String storeOwnerName, JPanel productPanel) {
