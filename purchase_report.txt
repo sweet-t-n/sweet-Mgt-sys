@@ -1,0 +1,13 @@
+Purchase Report
+Store Owner: nareman
+Purchases:
+ - sweet1 - $90
+Total Amount: $90.0
+
+Purchase Report
+Store Owner: nareman
+Purchases:
+ - sweet1 - $90
+ - rktgbekr - $1000
+Total Amount: $1090.0
+
