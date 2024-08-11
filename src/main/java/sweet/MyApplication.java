@@ -935,22 +935,19 @@ public class MyApplication {
     //feedback user
     private void openFeedbackFrame(String username) {
         JFrame feedbackFrame = new JFrame("Feedback");
-        feedbackFrame.setSize(600, 500); 
+        feedbackFrame.setSize(600, 500);
         feedbackFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        feedbackFrame.setLayout(new BorderLayout(10, 10)); 
+        feedbackFrame.setLayout(new BorderLayout(10, 10));
 
-        
         JLabel headerLabel = new JLabel("Provide Feedback for Your Purchases", SwingConstants.CENTER);
-        headerLabel.setFont(new Font("Arial", Font.BOLD, 18)); 
-        headerLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0)); 
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        headerLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         feedbackFrame.add(headerLabel, BorderLayout.NORTH);
 
-        
         JPanel feedbackPanel = new JPanel();
         feedbackPanel.setLayout(new BoxLayout(feedbackPanel, BoxLayout.Y_AXIS));
-        feedbackPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); 
+        feedbackPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        
         class Purchase {
             String productName;
             String storeOwner;
@@ -1002,14 +999,13 @@ public class MyApplication {
             return;
         }
 
-         
         for (Purchase purchase : purchases) {
             JPanel productPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 
             JLabel productLabel = new JLabel(purchase.productName);
-            productLabel.setPreferredSize(new Dimension(200, 25)); 
-            productLabel.setFont(new Font("Arial", Font.PLAIN, 14)); 
-            JTextField feedbackField = new JTextField(25); 
+            productLabel.setPreferredSize(new Dimension(200, 25));
+            productLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+            JTextField feedbackField = new JTextField(25);
 
             productPanel.add(productLabel);
             productPanel.add(feedbackField);
@@ -1018,11 +1014,11 @@ public class MyApplication {
         }
 
         JButton saveButton = new JButton("Save Feedback");
-        saveButton.setFont(new Font("Arial", Font.BOLD, 14)); 
-        saveButton.setBackground(new Color(70, 130, 180)); 
-        saveButton.setForeground(Color.WHITE); 
-        saveButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15)); 
-        saveButton.setFocusPainted(false); 
+        saveButton.setFont(new Font("Arial", Font.BOLD, 14));
+        saveButton.setBackground(new Color(70, 130, 180));
+        saveButton.setForeground(Color.WHITE);
+        saveButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        saveButton.setFocusPainted(false);
 
         saveButton.addActionListener(new ActionListener() {
             @Override
@@ -1058,6 +1054,9 @@ public class MyApplication {
                     }
                     JOptionPane.showMessageDialog(feedbackFrame, "Feedback saved successfully!");
                     feedbackFrame.dispose();
+
+                    // عرض التعليقات بعد الحفظ
+                    showFeedback();
                 } catch (IOException ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(feedbackFrame, "Error saving feedback!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -1066,7 +1065,7 @@ public class MyApplication {
         });
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10)); 
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
         buttonPanel.add(saveButton);
 
         feedbackFrame.add(new JScrollPane(feedbackPanel), BorderLayout.CENTER);
@@ -1075,6 +1074,58 @@ public class MyApplication {
         feedbackFrame.setVisible(true);
     }
 
+    private void showFeedback() {
+        JFrame feedbackDisplayFrame = new JFrame("Feedback Display");
+        feedbackDisplayFrame.setSize(600, 400);
+        feedbackDisplayFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        feedbackDisplayFrame.setLayout(new BorderLayout());
+
+        JLabel titleLabel = new JLabel("Feedback Entries", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        feedbackDisplayFrame.add(titleLabel, BorderLayout.NORTH);
+
+        JTextArea feedbackTextArea = new JTextArea();
+        feedbackTextArea.setEditable(false);
+        feedbackTextArea.setFont(new Font("Arial", Font.PLAIN, 14));
+        feedbackTextArea.setLineWrap(true);
+        feedbackTextArea.setWrapStyleWord(true);
+
+        try (Scanner scanner = new Scanner(new File("feedback.txt"))) {
+            while (scanner.hasNextLine()) {
+                feedbackTextArea.append(scanner.nextLine() + "\n");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(feedbackDisplayFrame, "Error reading feedback file!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        JScrollPane scrollPane = new JScrollPane(feedbackTextArea);
+        feedbackDisplayFrame.add(scrollPane, BorderLayout.CENTER);
+
+        // Adding OK button
+        JButton okButton = new JButton("OK");
+        okButton.setFont(new Font("Arial", Font.BOLD, 14));
+        okButton.setBackground(new Color(70, 130, 180));
+        okButton.setForeground(Color.WHITE);
+        okButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        okButton.setFocusPainted(false);
+
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                feedbackDisplayFrame.dispose();
+            }
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        buttonPanel.add(okButton);
+
+        feedbackDisplayFrame.add(buttonPanel, BorderLayout.SOUTH);
+
+        feedbackDisplayFrame.setVisible(true);
+    }
 
     
 
