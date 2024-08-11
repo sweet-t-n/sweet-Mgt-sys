@@ -303,7 +303,7 @@ public class MyApplication {
             public void actionPerformed(ActionEvent e) {
                 // Open Manage Feedback functionality
                 // You can add the specific functionality here
-                JOptionPane.showMessageDialog(contentFrame, "Manage Feedback functionality.");
+                showFeedback(true);
             }
         });
 
@@ -1022,6 +1022,7 @@ public class MyApplication {
 
         saveButton.addActionListener(new ActionListener() {
             @Override
+           
             public void actionPerformed(ActionEvent e) {
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter("feedback.txt", true))) {
                     Component[] components = feedbackPanel.getComponents();
@@ -1055,8 +1056,9 @@ public class MyApplication {
                     JOptionPane.showMessageDialog(feedbackFrame, "Feedback saved successfully!");
                     feedbackFrame.dispose();
 
-                    // عرض التعليقات بعد الحفظ
-                    showFeedback();
+                    
+					// عرض التعليقات بعد الحفظ
+                    showFeedback(false);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(feedbackFrame, "Error saving feedback!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -1074,7 +1076,7 @@ public class MyApplication {
         feedbackFrame.setVisible(true);
     }
 
-    private void showFeedback() {
+    private void showFeedback(boolean isAdmin) {
         JFrame feedbackDisplayFrame = new JFrame("Feedback Display");
         feedbackDisplayFrame.setSize(600, 400);
         feedbackDisplayFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -1085,25 +1087,66 @@ public class MyApplication {
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         feedbackDisplayFrame.add(titleLabel, BorderLayout.NORTH);
 
-        JTextArea feedbackTextArea = new JTextArea();
-        feedbackTextArea.setEditable(false);
-        feedbackTextArea.setFont(new Font("Arial", Font.PLAIN, 14));
-        feedbackTextArea.setLineWrap(true);
-        feedbackTextArea.setWrapStyleWord(true);
+        JPanel feedbackPanel = new JPanel();
+        feedbackPanel.setLayout(new BoxLayout(feedbackPanel, BoxLayout.Y_AXIS));
+        feedbackPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        List<String> feedbackEntries = new ArrayList<>();
 
         try (Scanner scanner = new Scanner(new File("feedback.txt"))) {
+            StringBuilder feedback = new StringBuilder();
             while (scanner.hasNextLine()) {
-                feedbackTextArea.append(scanner.nextLine() + "\n");
+                String line = scanner.nextLine();
+                if (line.startsWith("------------------------------------------------------------")) {
+                    feedbackEntries.add(feedback.toString());
+                    feedback = new StringBuilder();
+                } else {
+                    feedback.append(line).append("\n");
+                }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(feedbackDisplayFrame, "Error reading feedback file!", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        JScrollPane scrollPane = new JScrollPane(feedbackTextArea);
+        for (String entry : feedbackEntries) {
+            JPanel entryPanel = new JPanel(new BorderLayout());
+            JTextArea feedbackTextArea = new JTextArea(entry);
+            feedbackTextArea.setEditable(false);
+            feedbackTextArea.setFont(new Font("Arial", Font.PLAIN, 14));
+            feedbackTextArea.setLineWrap(true);
+            feedbackTextArea.setWrapStyleWord(true);
+            feedbackTextArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            entryPanel.add(new JScrollPane(feedbackTextArea), BorderLayout.CENTER);
+
+            if (isAdmin) {
+                JButton deleteButton = new JButton("Delete");
+                deleteButton.setFont(new Font("Arial", Font.BOLD, 14));
+                deleteButton.setBackground(new Color(220, 20, 60));
+                deleteButton.setForeground(Color.WHITE);
+                deleteButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+                deleteButton.setFocusPainted(false);
+
+                deleteButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        feedbackPanel.remove(entryPanel);
+                        feedbackPanel.revalidate();
+                        feedbackPanel.repaint();
+                        feedbackEntries.remove(entry);
+                        saveFeedbackToFile(feedbackEntries);
+                    }
+                });
+
+                entryPanel.add(deleteButton, BorderLayout.EAST);
+            }
+
+            feedbackPanel.add(entryPanel);
+        }
+
+        JScrollPane scrollPane = new JScrollPane(feedbackPanel);
         feedbackDisplayFrame.add(scrollPane, BorderLayout.CENTER);
 
-        // Adding OK button
         JButton okButton = new JButton("OK");
         okButton.setFont(new Font("Arial", Font.BOLD, 14));
         okButton.setBackground(new Color(70, 130, 180));
@@ -1127,7 +1170,17 @@ public class MyApplication {
         feedbackDisplayFrame.setVisible(true);
     }
 
-    
+    private void saveFeedbackToFile(List<String> feedbackEntries) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("feedback.txt"))) {
+            for (String entry : feedbackEntries) {
+                writer.write(entry);
+                writer.write("------------------------------------------------------------");
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     
