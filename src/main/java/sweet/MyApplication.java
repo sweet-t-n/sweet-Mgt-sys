@@ -5,13 +5,12 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
@@ -211,7 +210,7 @@ public class MyApplication {
                 break;
             case "Admin":
                 userExists = adminList.stream().anyMatch(u -> u.getUsername().equals(username) && u.getPassword().equals(password));
-                openAdminDashboard();
+               
                 break;
             case "Material Supplier":
                 userExists = materialSupplierList.stream().anyMatch(u -> u.getUsername().equals(username) && u.getPassword().equals(password));
@@ -252,7 +251,7 @@ public class MyApplication {
         userManagementButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Open User Management frame or functionality
+               
             	opencontentManagementFrame();   
             }
         });
@@ -260,7 +259,7 @@ public class MyApplication {
         monitoringReportingButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Open Monitoring and Reporting frame or functionality
+                
             	openMonitoringAndReportingFrame();
             }
         });
@@ -826,7 +825,7 @@ public class MyApplication {
 
         if (role.equals("User")) {
         	  JFrame roleFrame = new JFrame(role + " Dashboard");
-              roleFrame.setSize(600, 800); // حجم مبدئي
+              roleFrame.setSize(850, 800); // حجم مبدئي
               roleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
               roleFrame.setLayout(null);
 
@@ -848,11 +847,15 @@ public class MyApplication {
             JButton browseButton = new JButton("Browse All Content");
             browseButton.setBounds(480, 50, 150, 25);
             roleFrame.add(browseButton);
+            
+            JButton feedbackButton = new JButton("feedback");
+            feedbackButton.setBounds(640, 50, 100, 25);
+            roleFrame.add(feedbackButton);
 
             JPanel imagePanel = new JPanel();
             imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.Y_AXIS));
             JScrollPane scrollPane = new JScrollPane(imagePanel);
-            scrollPane.setBounds(50, 100, 500, 600);
+            scrollPane.setBounds(50, 100, 400, 600);
             roleFrame.add(scrollPane);
 
             loadPosts(username, imagePanel); // Load posts for the user
@@ -874,7 +877,7 @@ public class MyApplication {
             buyFromStoresButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    openBuyFromStoresFrame();
+                    openBuyFromStoresFrame(username);
                 }
             });
 
@@ -882,6 +885,14 @@ public class MyApplication {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     openBrowseAllContentFrame(false);
+                }
+            });
+            
+            feedbackButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                	openFeedbackFrame( username);
+                    
                 }
             });
             roleFrame.setVisible(true);
@@ -921,6 +932,157 @@ public class MyApplication {
     }
 
     ///////////////////////////////////////////////////////////////////////
+    //feedback user
+    private void openFeedbackFrame(String username) {
+        JFrame feedbackFrame = new JFrame("Feedback");
+        feedbackFrame.setSize(600, 500); 
+        feedbackFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        feedbackFrame.setLayout(new BorderLayout(10, 10)); 
+
+        
+        JLabel headerLabel = new JLabel("Provide Feedback for Your Purchases", SwingConstants.CENTER);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 18)); 
+        headerLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0)); 
+        feedbackFrame.add(headerLabel, BorderLayout.NORTH);
+
+        
+        JPanel feedbackPanel = new JPanel();
+        feedbackPanel.setLayout(new BoxLayout(feedbackPanel, BoxLayout.Y_AXIS));
+        feedbackPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); 
+
+        
+        class Purchase {
+            String productName;
+            String storeOwner;
+
+            Purchase(String productName, String storeOwner) {
+                this.productName = productName;
+                this.storeOwner = storeOwner;
+            }
+        }
+
+        List<Purchase> purchases = new ArrayList<>();
+
+        try (Scanner scanner = new Scanner(new File("purchase_report.txt"))) {
+            boolean userSectionFound = false;
+            String currentStoreOwner = "";
+
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine().trim();
+                if (line.startsWith("User:")) {
+                    String currentUser = line.substring(5).trim();
+                    if (currentUser.equals(username)) {
+                        userSectionFound = true;
+                    } else {
+                        userSectionFound = false;
+                    }
+                } else if (userSectionFound) {
+                    if (line.startsWith("Store Owner:")) {
+                        currentStoreOwner = line.substring(12).trim();
+                    } else if (line.startsWith("|")) {
+                        String[] parts = line.split("\\|");
+                        if (parts.length >= 2) {
+                            String productName = parts[1].trim();
+                            purchases.add(new Purchase(productName, currentStoreOwner));
+                        }
+                    } else if (line.startsWith("------------------------------------------------------------")) {
+                        userSectionFound = false;
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(feedbackFrame, "Error reading purchases file!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (purchases.isEmpty()) {
+            JOptionPane.showMessageDialog(feedbackFrame, "No purchases found for user: " + username, "Info", JOptionPane.INFORMATION_MESSAGE);
+            feedbackFrame.dispose();
+            return;
+        }
+
+         
+        for (Purchase purchase : purchases) {
+            JPanel productPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+
+            JLabel productLabel = new JLabel(purchase.productName);
+            productLabel.setPreferredSize(new Dimension(200, 25)); 
+            productLabel.setFont(new Font("Arial", Font.PLAIN, 14)); 
+            JTextField feedbackField = new JTextField(25); 
+
+            productPanel.add(productLabel);
+            productPanel.add(feedbackField);
+
+            feedbackPanel.add(productPanel);
+        }
+
+        JButton saveButton = new JButton("Save Feedback");
+        saveButton.setFont(new Font("Arial", Font.BOLD, 14)); 
+        saveButton.setBackground(new Color(70, 130, 180)); 
+        saveButton.setForeground(Color.WHITE); 
+        saveButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15)); 
+        saveButton.setFocusPainted(false); 
+
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter("feedback.txt", true))) {
+                    Component[] components = feedbackPanel.getComponents();
+                    int index = 0;
+                    for (Component component : components) {
+                        if (component instanceof JPanel) {
+                            JPanel productPanel = (JPanel) component;
+                            Component[] innerComponents = productPanel.getComponents();
+                            if (innerComponents.length >= 2) {
+                                JLabel productLabel = (JLabel) innerComponents[0];
+                                JTextField feedbackField = (JTextField) innerComponents[1];
+                                String feedback = feedbackField.getText().trim();
+
+                                if (!feedback.isEmpty()) {
+                                    Purchase purchase = purchases.get(index);
+                                    writer.write("User: " + username);
+                                    writer.newLine();
+                                    writer.write("Store Owner: " + purchase.storeOwner);
+                                    writer.newLine();
+                                    writer.write("Product: " + productLabel.getText());
+                                    writer.newLine();
+                                    writer.write("Feedback: " + feedback);
+                                    writer.newLine();
+                                    writer.write("------------------------------------------------------------");
+                                    writer.newLine();
+                                }
+                                index++;
+                            }
+                        }
+                    }
+                    JOptionPane.showMessageDialog(feedbackFrame, "Feedback saved successfully!");
+                    feedbackFrame.dispose();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(feedbackFrame, "Error saving feedback!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10)); 
+        buttonPanel.add(saveButton);
+
+        feedbackFrame.add(new JScrollPane(feedbackPanel), BorderLayout.CENTER);
+        feedbackFrame.add(buttonPanel, BorderLayout.SOUTH);
+
+        feedbackFrame.setVisible(true);
+    }
+
+
+    
+
+
+    
+    
+////////////////////////////////////////////////////////////////////
+
     
     private void openBrowseAllContentFrame(boolean isAdmin) {
         JFrame browseFrame = new JFrame("Browse All Content");
@@ -1149,7 +1311,7 @@ public class MyApplication {
                     String fileImagePath = parts[1];
                     String fileDescription = parts[2];
 
-                    // Only write lines that do not match the content to be deleted
+                   
                     if (!(fileUsername.equals(username) && fileImagePath.equals(imagePath) && fileDescription.equals(description))) {
                         writer.write(line);
                         writer.newLine();
@@ -1318,7 +1480,7 @@ public class MyApplication {
 
     ///////////////////////////////////////////////////////////
 
-    private void openBuyFromStoresFrame() {
+    private void openBuyFromStoresFrame(String username) {
         JFrame buyFromStoresFrame = new JFrame("Buy from Stores");
         buyFromStoresFrame.setSize(800, 800);
         buyFromStoresFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -1344,7 +1506,7 @@ public class MyApplication {
         filterLabel.setBounds(50, 110, 150, 25);
         buyFromStoresFrame.add(filterLabel);
 
-        JComboBox<String> dietaryFilterComboBox = new JComboBox<>(new String[] {"All", "Gluten-Free", "Nut-Free", "Dairy-Free"});
+        JComboBox<String> dietaryFilterComboBox = new JComboBox<>(new String[]{"All", "Gluten-Free", "Nut-Free", "Dairy-Free"});
         dietaryFilterComboBox.setBounds(200, 110, 250, 25);
         buyFromStoresFrame.add(dietaryFilterComboBox);
 
@@ -1401,38 +1563,45 @@ public class MyApplication {
             @Override
             public void actionPerformed(ActionEvent e) {
                 double total = cart.stream().mapToDouble(item -> Double.parseDouble(item[2])).sum();
-                
+
                 String selectedOwner = (String) storeOwnerComboBox.getSelectedItem();
                 StringBuilder report = new StringBuilder();
                 report.append("Purchase Report\n");
-                
+
+                report.append("User: ").append(username).append("\n");
                 report.append("Store Owner: ").append(selectedOwner).append("\n");
                 report.append("Purchases:\n");
 
                 for (String[] item : cart) {
-                    report.append(" - ").append(item[1]).append(" - $").append(item[2]).append("\n");
+                    report.append(" | ").append(item[1]).append(" | $").append(item[2]).append("\n");
                 }
                 report.append("Total Amount: $").append(total).append("\n");
 
-                // Save report to file
+                // Add a separator for different purchase reports
+                report.append("\n------------------------------------------------------------\n");
+
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter("purchase_report.txt", true))) {
                     writer.write(report.toString());
                     writer.newLine();
-                    writer.flush();
                 } catch (IOException ioException) {
+                    JOptionPane.showMessageDialog(buyFromStoresFrame,
+                        "Error writing to file: " + ioException.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
                     ioException.printStackTrace();
                 }
 
-                // Display report to user
-                JOptionPane.showMessageDialog(buyFromStoresFrame, report.toString(), "Purchase Report", JOptionPane.INFORMATION_MESSAGE);
-                
-                // Optionally clear the cart or redirect to payment gateway here
-                cart.clear(); // Clear cart after checkout if necessary
+                JOptionPane.showMessageDialog(buyFromStoresFrame, 
+                    report.toString(), 
+                    "Purchase Report", 
+                    JOptionPane.INFORMATION_MESSAGE);
+
+                cart.clear();
             }
         });
-
         buyFromStoresFrame.setVisible(true);
     }
+
     ///////////////////////////////////////////////////////////
 
     private void loadProductsForStoreOwner(String storeOwnerName, String searchQuery, String dietaryFilter, JPanel productPanel, List<String[]> cart) {
@@ -1697,7 +1866,7 @@ public class MyApplication {
     //////////////////////////////////////////////////
     
     private void loadPosts(String username, JPanel imagePanel) {
-        imagePanel.removeAll(); // أزل كل المكونات الحالية قبل تحميل جديدة
+        imagePanel.removeAll();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(username + "_posts.txt"));
             String line;

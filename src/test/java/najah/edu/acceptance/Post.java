@@ -19,7 +19,7 @@ public class Post {
     @Given("the user {string} is logged in")
     public void theUserIsLoggedIn(String username) {
         this.username = username;
-        // افترض أن المستخدم قد تم تسجيل دخوله بنجاح. قد تحتاج هنا إلى التحقق الفعلي من حالة تسجيل الدخول في تطبيقك.
+        
     }
 
     @When("the user posts content with description {string} and image {string}")
@@ -27,7 +27,7 @@ public class Post {
         this.description = description;
         this.image = image;
 
-        // تنفيذ منطق التحقق من صحة النشر
+        
         if (description.isEmpty()) {
             postSuccess = false;
             errorMessage = "Description cannot be empty";

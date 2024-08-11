@@ -1,13 +1,28 @@
 Purchase Report
+User: tasneem
 Store Owner: nareman
 Purchases:
- - sweet1 - $90
-Total Amount: $90.0
+ | rktgbekr | $1000
+Total Amount: $1000.0
+
+------------------------------------------------------------
 
 Purchase Report
+User: tasneem
 Store Owner: nareman
 Purchases:
- - sweet1 - $90
- - rktgbekr - $1000
-Total Amount: $1090.0
+ | sweet1 | $90
+ | sweet | $150
+Total Amount: $240.0
+
+------------------------------------------------------------
+
+Purchase Report
+User: tasneem
+Store Owner: shahed
+Purchases:
+ | hi | $100
+Total Amount: $100.0
+
+------------------------------------------------------------
 
