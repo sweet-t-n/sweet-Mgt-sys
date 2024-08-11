@@ -50,7 +50,7 @@ public class MyApplication {
         roleLabel.setBounds(20, 20, 150, 25);
         frame.add(roleLabel);
 
-        String[] roles = {"User", "Store Owner", "Admin", "Material Supplier"};
+        String[] roles = {"User", "Store Owner", "Admin"};
         roleComboBox = new JComboBox<>(roles);
         roleComboBox.setBounds(180, 20, 200, 25);
         frame.add(roleComboBox);
@@ -111,7 +111,7 @@ public class MyApplication {
         JPasswordField passwordField = new JPasswordField();
         JTextField emailField = new JTextField();
         JTextField countryField = new JTextField();
-        JComboBox<String> roleComboBox = new JComboBox<>(new String[]{"User", "Store Owner", "Admin", "Material Supplier"});
+        JComboBox<String> roleComboBox = new JComboBox<>(new String[]{"User", "Admin", "Material Supplier"});
 
         addCommonComponents(signUpFrame, usernameField, passwordField, emailField, countryField, roleComboBox);
 
@@ -166,16 +166,7 @@ public class MyApplication {
                             JOptionPane.showMessageDialog(signUpFrame, "Admin registered successfully.");
                         }
                         break;
-                    case "Material Supplier":
-                        userExists = materialSupplierList.stream().anyMatch(u -> u.getUsername().equals(username));
-                        if (userExists) {
-                            JOptionPane.showMessageDialog(signUpFrame, "Material Supplier already exists.");
-                        } else {
-                            materialSupplierList.add(new MaterialSupplier(username, password, email, country));
-                            saveUserData();
-                            JOptionPane.showMessageDialog(signUpFrame, "Material Supplier registered successfully.");
-                        }
-                        break;
+                   
                     default:
                         JOptionPane.showMessageDialog(signUpFrame, "Invalid role selected.");
                         break;
@@ -212,9 +203,7 @@ public class MyApplication {
                 userExists = adminList.stream().anyMatch(u -> u.getUsername().equals(username) && u.getPassword().equals(password));
                
                 break;
-            case "Material Supplier":
-                userExists = materialSupplierList.stream().anyMatch(u -> u.getUsername().equals(username) && u.getPassword().equals(password));
-                break;
+            
             default:
                 outputArea.setText("Invalid role selected.");
                 return;
@@ -494,12 +483,12 @@ public class MyApplication {
         add1.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // إنشاء إطار جديد لإدخال البيانات
+                    
                     JFrame inputFrame1 = new JFrame("Add User");
                     inputFrame1.setSize(400, 300);
                     inputFrame1.setLayout(null);
 
-                    // Label و TextField لإدخال الاسم
+                     
                     JLabel nameLabel1 = new JLabel("Owner Name:");
                     nameLabel1.setBounds(20, 20, 150, 25);
                     inputFrame1.add(nameLabel1);
@@ -597,15 +586,15 @@ public class MyApplication {
         contentFrame11.setVisible(true);
     }
     private void Managementstoreowners() {
-        // Simulated financial report generation
+        
     	openFrame();
-        // Add code to generate actual financial reports
+       
     }
 
     private void Managementrawmaterialsuppliers() {
-        // Simulated financial report generation
+        
     	openFrame1();
-        // Add code to generate actual financial reports
+        
     }
 
     private void openMonitoringAndReportingFrame() {
@@ -712,7 +701,7 @@ public class MyApplication {
                 }
             }
             
-            // عرض الإحصائيات في نافذة جديدة
+            
             JFrame statsFrame = new JFrame("User Statistics by City");
             statsFrame.setSize(400, 300);
             statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -821,17 +810,17 @@ public class MyApplication {
 
     
     private void openRoleSpecificFrame(String role, String username) {
-      
 
         if (role.equals("User")) {
-        	  JFrame roleFrame = new JFrame(role + " Dashboard");
-              roleFrame.setSize(850, 800); // حجم مبدئي
-              roleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-              roleFrame.setLayout(null);
+            JFrame roleFrame = new JFrame(role + " Dashboard");
+            roleFrame.setSize(850, 800);
+            roleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            roleFrame.setLayout(null);
 
-              JLabel titleLabel = new JLabel("Welcome " + username, SwingConstants.CENTER);
-              titleLabel.setBounds(0, 20, 600, 25);
-              roleFrame.add(titleLabel);
+            JLabel titleLabel = new JLabel("Welcome " + username, SwingConstants.CENTER);
+            titleLabel.setBounds(0, 20, 600, 25);
+            roleFrame.add(titleLabel);
+            
             JButton settingsButton = new JButton("Settings");
             settingsButton.setBounds(50, 50, 100, 25);
             roleFrame.add(settingsButton);
@@ -848,9 +837,13 @@ public class MyApplication {
             browseButton.setBounds(480, 50, 150, 25);
             roleFrame.add(browseButton);
             
-            JButton feedbackButton = new JButton("feedback");
+            JButton feedbackButton = new JButton("Feedback");
             feedbackButton.setBounds(640, 50, 100, 25);
             roleFrame.add(feedbackButton);
+            
+            JButton communicateButton = new JButton("Communicate");
+            communicateButton.setBounds(520, 100, 150, 25);
+            roleFrame.add(communicateButton);
 
             JPanel imagePanel = new JPanel();
             imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.Y_AXIS));
@@ -891,24 +884,36 @@ public class MyApplication {
             feedbackButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                	openFeedbackFrame( username);
-                    
+                    openFeedbackFrame(username);
                 }
             });
+            
+            communicateButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    communicateWithStoreOwner();
+                }
+            });
+
             roleFrame.setVisible(true);
 
         } else if (role.equals("Store Owner")) {
-        	  JFrame roleFrame = new JFrame(role + " Dashboard");
-              roleFrame.setSize(600, 800); // حجم مبدئي
-              roleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-              roleFrame.setLayout(null);
+            JFrame roleFrame = new JFrame(role + " Dashboard");
+            roleFrame.setSize(600, 800);
+            roleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            roleFrame.setLayout(null);
 
-              JLabel titleLabel = new JLabel("Welcome " + username, SwingConstants.CENTER);
-              titleLabel.setBounds(0, 20, 600, 25);
-              roleFrame.add(titleLabel);
+            JLabel titleLabel = new JLabel("Welcome " + username, SwingConstants.CENTER);
+            titleLabel.setBounds(0, 20, 600, 25);
+            roleFrame.add(titleLabel);
+
             JButton addProductButton = new JButton("Add Product");
             addProductButton.setBounds(50, 50, 150, 25);
             roleFrame.add(addProductButton);
+
+            JButton viewMessagesButton = new JButton("View Messages");
+            viewMessagesButton.setBounds(220, 50, 150, 25);
+            roleFrame.add(viewMessagesButton);
 
             JPanel productPanel = new JPanel();
             productPanel.setLayout(new BoxLayout(productPanel, BoxLayout.Y_AXIS));
@@ -922,14 +927,316 @@ public class MyApplication {
                     openAddProductFrame(username, productPanel);
                 }
             });
+
+            viewMessagesButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    openViewMessagesFrame(username);
+                }
+            });
+
             roleFrame.setVisible(true);
 
+        } else if (role.equals("Admin")) {
+            openAdminDashboard();
         }
-        else if (role.equals("Admin")) {        
-        	openAdminDashboard();
-}
-
     }
+    
+    //////////////////////////////////////////////////////////////
+    //msg user and owner
+    private void openViewMessagesFrame(String username) {
+        JFrame messagesFrame = new JFrame("View Messages");
+        messagesFrame.setSize(800, 600);
+        messagesFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        messagesFrame.setLayout(new BorderLayout());
+
+        JPanel messagePanel = new JPanel();
+        messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(messagePanel);
+        messagesFrame.add(scrollPane, BorderLayout.CENTER);
+
+        try {
+            Map<String, String> messagesMap = getMessagesForStoreOwner(username);
+            for (Map.Entry<String, String> entry : messagesMap.entrySet()) {
+                String messageId = entry.getKey();
+                String messageContent = entry.getValue();
+
+                JPanel singleMessagePanel = new JPanel();
+                singleMessagePanel.setLayout(new BorderLayout());
+
+                JTextArea messageArea = new JTextArea(messageContent);
+                messageArea.setEditable(false);
+                messageArea.setLineWrap(true);
+                messageArea.setWrapStyleWord(true);
+
+                JButton replyButton = new JButton("Reply");
+                replyButton.setFont(new Font("Arial", Font.BOLD, 14));
+                replyButton.setBackground(new Color(70, 130, 180));
+                replyButton.setForeground(Color.WHITE);
+                replyButton.setFocusPainted(false);
+                replyButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        openReplyMessageFrame(messageId, messageContent);
+                    }
+                });
+
+                singleMessagePanel.add(new JScrollPane(messageArea), BorderLayout.CENTER);
+                singleMessagePanel.add(replyButton, BorderLayout.EAST);
+
+                messagePanel.add(singleMessagePanel);
+                messagePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(messagesFrame, "Error loading messages!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        messagesFrame.setVisible(true);
+    }
+
+    // فتح نافذة الرد على رسالة محددة
+    private void openReplyMessageFrame(String messageId, String messageContent) {
+        JFrame replyFrame = new JFrame("Reply to Message");
+        replyFrame.setSize(600, 400);
+        replyFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        replyFrame.setLayout(new BorderLayout());
+
+        JTextArea replyArea = new JTextArea(10, 40);
+        replyArea.setFont(new Font("Arial", Font.PLAIN, 14));
+        JScrollPane scrollPane = new JScrollPane(replyArea);
+        replyFrame.add(scrollPane, BorderLayout.CENTER);
+
+        JLabel messageLabel = new JLabel("Replying to: " + messageContent);
+        messageLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        replyFrame.add(messageLabel, BorderLayout.NORTH);
+
+        JButton sendReplyButton = new JButton("Send Reply");
+        sendReplyButton.setFont(new Font("Arial", Font.BOLD, 14));
+        sendReplyButton.setBackground(new Color(34, 139, 34));
+        sendReplyButton.setForeground(Color.WHITE);
+        sendReplyButton.setFocusPainted(false);
+
+        sendReplyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String reply = replyArea.getText().trim();
+                if (!reply.isEmpty()) {
+                    try {
+                        saveResponseToFile(messageId, reply);
+                        JOptionPane.showMessageDialog(replyFrame, "Reply sent successfully!");
+                        replyFrame.dispose();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(replyFrame, "Error saving reply!", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(replyFrame, "Please enter a reply message!", "Warning", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(sendReplyButton);
+        replyFrame.add(buttonPanel, BorderLayout.SOUTH);
+
+        replyFrame.setVisible(true);
+    }
+
+   
+    private Map<String, String> getMessagesForStoreOwner(String username) throws IOException {
+        Map<String, String> messages = new HashMap<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("messages.txt"))) {
+            String line;
+            String currentMessageId = null;
+            StringBuilder messageContent = new StringBuilder();
+            boolean isOwnerMessage = false;
+
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("ID: ")) {
+                    currentMessageId = line.substring(4).trim();
+                } else if (line.startsWith("Name: ") && line.substring(6).trim().equals(username)) {
+                    isOwnerMessage = true;
+                } else if (line.startsWith("Message: ")) {
+                    if (isOwnerMessage && currentMessageId != null) {
+                        messageContent.append(line.substring(9)).append("\n");
+                    }
+                } else if (line.equals("----") && isOwnerMessage) {
+                    if (currentMessageId != null) {
+                        messages.put(currentMessageId, messageContent.toString().trim());
+                    }
+                    currentMessageId = null;
+                    messageContent.setLength(0);
+                    isOwnerMessage = false;
+                }
+            }
+        }
+        return messages;
+    }
+
+    ////////////////////////
+    public static void communicateWithStoreOwner() {
+        JFrame frame = new JFrame("Communicate with Store Owners");
+        frame.setSize(600, 400);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+
+        JPanel selectionPanel = new JPanel();
+        selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.Y_AXIS));
+
+        JLabel typeLabel = new JLabel("Type: StoreOwner");
+        selectionPanel.add(typeLabel);
+
+        JComboBox<String> nameComboBox = new JComboBox<>();
+        nameComboBox.addItem("Select Name");
+        selectionPanel.add(nameComboBox);
+
+        frame.add(selectionPanel, BorderLayout.NORTH);
+
+        JTextArea messageArea = new JTextArea(10, 40);
+        messageArea.setFont(new Font("Arial", Font.PLAIN, 14));
+        JScrollPane scrollPane = new JScrollPane(messageArea);
+        frame.add(scrollPane, BorderLayout.CENTER);
+
+        JButton sendButton = new JButton("Send Message");
+        sendButton.setFont(new Font("Arial", Font.BOLD, 14));
+        sendButton.setBackground(new Color(70, 130, 180));
+        sendButton.setForeground(Color.WHITE);
+        sendButton.setFocusPainted(false);
+
+        sendButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedName = (String) nameComboBox.getSelectedItem();
+                String message = messageArea.getText().trim();
+
+                if ("Select Name".equals(selectedName) || message.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "Please select a name and enter a message!", "Warning", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    try {
+                        saveMessageToFile("StoreOwner", selectedName, message);
+                        JOptionPane.showMessageDialog(frame, "Message sent successfully! You can check for replies later.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(frame, "Error communicating with files!", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+
+        JButton checkRepliesButton = new JButton("Check Replies");
+        checkRepliesButton.setFont(new Font("Arial", Font.BOLD, 14));
+        checkRepliesButton.setBackground(new Color(34, 139, 34));
+        checkRepliesButton.setForeground(Color.WHITE);
+        checkRepliesButton.setFocusPainted(false);
+
+        checkRepliesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String replies = getResponsesForUserMessages();
+                    JOptionPane.showMessageDialog(frame, "Replies:\n" + replies, "Replies", JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(frame, "Error reading responses file!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(sendButton);
+        buttonPanel.add(checkRepliesButton);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+
+        updateNameComboBox("StoreOwner", nameComboBox);
+
+        frame.setVisible(true);
+    }
+
+    private static void updateNameComboBox(String type, JComboBox<String> nameComboBox) {
+        nameComboBox.removeAllItems();
+        nameComboBox.addItem("Select Name");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length == 5 && parts[0].equalsIgnoreCase(type)) {
+                    nameComboBox.addItem(parts[1]); 
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error reading users file!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private static void saveMessageToFile(String type, String name, String message) throws IOException {
+        String messageId = String.valueOf(System.currentTimeMillis());
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("messages.txt", true))) {
+            writer.write("ID: " + messageId);
+            writer.newLine();
+            writer.write("Type: " + type);
+            writer.newLine();
+            writer.write("Name: " + name);
+            writer.newLine();
+            writer.write("Message: " + message);
+            writer.newLine();
+            writer.write("----");
+            writer.newLine();
+        }
+    }
+
+    private static void saveResponseToFile(String messageId, String response) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("response.txt", true))) {
+            writer.write("MessageID: " + messageId);
+            writer.newLine();
+            writer.write("Response: " + response);
+            writer.newLine();
+            writer.write("----");
+            writer.newLine();
+        }
+    }
+
+    private static String getResponsesForUserMessages() throws IOException {
+        StringBuilder result = new StringBuilder();
+        try (BufferedReader messageReader = new BufferedReader(new FileReader("messages.txt"));
+             BufferedReader responseReader = new BufferedReader(new FileReader("response.txt"))) {
+
+            Map<String, StringBuilder> messageResponses = new HashMap<>();
+            String line;
+            String currentMessageId = null;
+
+            while ((line = messageReader.readLine()) != null) {
+                if (line.startsWith("ID: ")) {
+                    currentMessageId = line.substring(4).trim();
+                    messageResponses.put(currentMessageId, new StringBuilder());
+                } else if (line.startsWith("Message: ")) {
+                    messageResponses.get(currentMessageId).append("Message: ").append(line.substring(9)).append("\n");
+                }
+            }
+
+            while ((line = responseReader.readLine()) != null) {
+                if (line.startsWith("MessageID: ")) {
+                    String messageId = line.substring(11).trim();
+                    StringBuilder responseBuilder = new StringBuilder();
+                    while ((line = responseReader.readLine()) != null && !line.equals("----")) {
+                        responseBuilder.append(line).append("\n");
+                    }
+                    if (messageResponses.containsKey(messageId)) {
+                        messageResponses.get(messageId).append("Response: ").append(responseBuilder.toString()).append("\n");
+                    }
+                }
+            }
+
+            for (StringBuilder sb : messageResponses.values()) {
+                result.append(sb.toString()).append("----\n");
+            }
+        }
+        return result.toString().trim(); 
+    }
+
 
     ///////////////////////////////////////////////////////////////////////
     //feedback user
@@ -1020,9 +1327,22 @@ public class MyApplication {
         saveButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
         saveButton.setFocusPainted(false);
 
+        JButton showButton = new JButton("Show Feedback");
+        showButton.setFont(new Font("Arial", Font.BOLD, 14));
+        showButton.setBackground(new Color(34, 139, 34));
+        showButton.setForeground(Color.WHITE);
+        showButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        showButton.setFocusPainted(false);
+
+        showButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showFeedback(false);
+            }
+        });
+
         saveButton.addActionListener(new ActionListener() {
             @Override
-           
             public void actionPerformed(ActionEvent e) {
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter("feedback.txt", true))) {
                     Component[] components = feedbackPanel.getComponents();
@@ -1056,8 +1376,7 @@ public class MyApplication {
                     JOptionPane.showMessageDialog(feedbackFrame, "Feedback saved successfully!");
                     feedbackFrame.dispose();
 
-                    
-					// عرض التعليقات بعد الحفظ
+                    // Show feedback after saving
                     showFeedback(false);
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -1069,6 +1388,7 @@ public class MyApplication {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
         buttonPanel.add(saveButton);
+        buttonPanel.add(showButton);
 
         feedbackFrame.add(new JScrollPane(feedbackPanel), BorderLayout.CENTER);
         feedbackFrame.add(buttonPanel, BorderLayout.SOUTH);
@@ -1147,22 +1467,25 @@ public class MyApplication {
         JScrollPane scrollPane = new JScrollPane(feedbackPanel);
         feedbackDisplayFrame.add(scrollPane, BorderLayout.CENTER);
 
+        // Create button panel
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+
+        // OK Button
         JButton okButton = new JButton("OK");
         okButton.setFont(new Font("Arial", Font.BOLD, 14));
         okButton.setBackground(new Color(70, 130, 180));
         okButton.setForeground(Color.WHITE);
         okButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
         okButton.setFocusPainted(false);
-
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                feedbackDisplayFrame.dispose();
+               
+                JOptionPane.showMessageDialog(feedbackDisplayFrame, "Operation succeeded!", "Success", JOptionPane.INFORMATION_MESSAGE);
+               
             }
         });
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
         buttonPanel.add(okButton);
 
         feedbackDisplayFrame.add(buttonPanel, BorderLayout.SOUTH);
@@ -1179,6 +1502,7 @@ public class MyApplication {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error saving feedback!", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
