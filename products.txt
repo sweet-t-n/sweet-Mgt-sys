@@ -5,3 +5,5 @@ nareman|sweet4|100|---|C:\Users\A.Z\OneDrive\Desktop\imageeeeeeeeeeeeeeee\2.jpg
 nareman|sweet5|150|----|C:\Users\A.Z\OneDrive\Desktop\imageeeeeeeeeeeeeeee\2.jpg
 shahed|sweet6|100|----|C:\Users\A.Z\OneDrive\Desktop\imageeeeeeeeeeeeeeee\2.jpg
 nareman|sweet1|100|1234|C:\Users\A.Z\OneDrive\Desktop\imageeeeeeeeeeeeeeee\1.jpg
+masa|sweet10|100|nice sweet|C:\Users\A.Z\OneDrive\Desktop\imageeeeeeeeeeeeeeee\2.jpg
+masa|sweet2|20|chocolata|C:\Users\A.Z\OneDrive\Desktop\imageeeeeeeeeeeeeeee\1.jpg

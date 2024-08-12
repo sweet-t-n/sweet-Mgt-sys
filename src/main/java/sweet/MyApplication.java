@@ -111,7 +111,7 @@ public class MyApplication {
         JPasswordField passwordField = new JPasswordField();
         JTextField emailField = new JTextField();
         JTextField countryField = new JTextField();
-        JComboBox<String> roleComboBox = new JComboBox<>(new String[]{"User", "Admin", "owner"});
+        JComboBox<String> roleComboBox = new JComboBox<>(new String[]{"User", "Admin", "Store Owner"});
 
         addCommonComponents(signUpFrame, usernameField, passwordField, emailField, countryField, roleComboBox);
 
@@ -808,7 +808,7 @@ public class MyApplication {
         bestSellingFrame.setVisible(true);
     }
 
-    
+    ////////                                                                    ///////
     private void openRoleSpecificFrame(String role, String username) {
 
         if (role.equals("User")) {
@@ -897,7 +897,7 @@ public class MyApplication {
 
             roleFrame.setVisible(true);
 
-        } else if (role.equals("Store Owner")) {
+        }else if (role.equals("Store Owner")) {
             JFrame roleFrame = new JFrame(role + " Dashboard");
             roleFrame.setSize(600, 800);
             roleFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -915,10 +915,14 @@ public class MyApplication {
             viewMessagesButton.setBounds(220, 50, 150, 25);
             roleFrame.add(viewMessagesButton);
 
+            JButton loadProductsButton = new JButton("Load Products");
+            loadProductsButton.setBounds(50, 720, 150, 25); // Positioned at the bottom of the frame
+            roleFrame.add(loadProductsButton);
+
             JPanel productPanel = new JPanel();
             productPanel.setLayout(new BoxLayout(productPanel, BoxLayout.Y_AXIS));
             JScrollPane scrollPane = new JScrollPane(productPanel);
-            scrollPane.setBounds(50, 100, 500, 600);
+            scrollPane.setBounds(50, 100, 500, 600); // Adjust height to fit above the loadProductsButton
             roleFrame.add(scrollPane);
 
             addProductButton.addActionListener(new ActionListener() {
@@ -935,9 +939,17 @@ public class MyApplication {
                 }
             });
 
-            roleFrame.setVisible(true);
+            loadProductsButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    loadStoreOwnerProducts(username, productPanel); // Call the method to load products
+                }
+            });
 
-        } else if (role.equals("Admin")) {
+            roleFrame.setVisible(true);
+        }
+
+ else if (role.equals("Admin")) {
             openAdminDashboard();
         }
     }
@@ -1761,9 +1773,47 @@ public class MyApplication {
     }
 
 //////////////////////////////////////////////////////////////////////////////////
+    public void openRoleSpecificFrame(String storeOwnerName) {
+        JFrame frame = new JFrame("Store Owner Dashboard");
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+
+        JPanel productPanel = new JPanel();
+        productPanel.setLayout(new BoxLayout(productPanel, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(productPanel);
+        frame.add(scrollPane, BorderLayout.CENTER);
+
+        // Load and display products
+        loadStoreOwnerProducts(storeOwnerName, productPanel);
+
+        JPanel buttonPanel = new JPanel();
+        JButton addButton = new JButton("Add Product");
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openAddProductFrame(storeOwnerName, productPanel);
+            }
+        });
+        buttonPanel.add(addButton);
+
+        JButton reloadButton = new JButton("Reload Products");
+        reloadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadStoreOwnerProducts(storeOwnerName, productPanel); // Refresh the product panel
+            }
+        });
+        buttonPanel.add(reloadButton);
+
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+
+        frame.setVisible(true);
+    }
+
     private void openAddProductFrame(String storeOwnerName, JPanel productPanel) {
         JFrame addProductFrame = new JFrame("Add Product");
-        addProductFrame.setSize(400, 400); 
+        addProductFrame.setSize(400, 400);
         addProductFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         addProductFrame.setLayout(null);
 
@@ -1800,7 +1850,7 @@ public class MyApplication {
         addProductFrame.add(chooseImageButton);
 
         JLabel imagePreview = new JLabel();
-        imagePreview.setBounds(150, 180, 200, 100); // مساحة عرض الصورة
+        imagePreview.setBounds(150, 180, 200, 100);
         addProductFrame.add(imagePreview);
 
         JButton saveButton = new JButton("Save Product");
@@ -1834,11 +1884,8 @@ public class MyApplication {
 
                 if (!productName.isEmpty() && !productPrice.isEmpty() && !productDescription.isEmpty() && imagePath[0] != null) {
                     saveProduct(storeOwnerName, productName, productPrice, productDescription, imagePath[0]);
-
-                    // Refresh the productPanel to display the new product
-                    loadStoreOwnerProducts(storeOwnerName, productPanel);
-
-                    addProductFrame.dispose(); // إغلاق النافذة بعد الحفظ
+                    loadStoreOwnerProducts(storeOwnerName, productPanel); // Refresh the product panel
+                    addProductFrame.dispose();
                 } else {
                     JOptionPane.showMessageDialog(addProductFrame, "Please fill in all fields and choose an image.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -1848,7 +1895,6 @@ public class MyApplication {
         addProductFrame.setVisible(true);
     }
 
-/////////////////////////////////////////////////////////////////////////////////
     private void saveProduct(String storeOwnerName, String productName, String productPrice, String productDescription, String imagePath) {
         try {
             FileWriter fw = new FileWriter("products.txt", true);
@@ -1860,9 +1906,9 @@ public class MyApplication {
             e.printStackTrace();
         }
     }
-///////////////////////////////////////////////////////////
+
     private void loadStoreOwnerProducts(String storeOwnerName, JPanel productPanel) {
-        productPanel.removeAll();          
+        productPanel.removeAll();
 
         try {
             FileReader fr = new FileReader("products.txt");
@@ -1875,7 +1921,6 @@ public class MyApplication {
                     productItemPanel.setLayout(new BoxLayout(productItemPanel, BoxLayout.Y_AXIS));
                     productItemPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-                    // عرض الصورة
                     if (productDetails.length > 4) {
                         ImageIcon imageIcon = new ImageIcon(productDetails[4]);
                         Image image = imageIcon.getImage().getScaledInstance(200, 100, Image.SCALE_SMOOTH);
@@ -1883,26 +1928,205 @@ public class MyApplication {
                         productItemPanel.add(imageLabel);
                     }
 
-                    // عرض الاسم والسعر
                     JLabel nameLabel = new JLabel("Name: " + productDetails[1]);
                     productItemPanel.add(nameLabel);
-                    
+
                     JLabel priceLabel = new JLabel("Price: " + productDetails[2]);
                     productItemPanel.add(priceLabel);
 
-                    // عرض الوصف
                     JLabel descriptionLabel = new JLabel("Description: " + productDetails[3]);
                     productItemPanel.add(descriptionLabel);
 
-                    // إضافة المنتج إلى اللوحة الرئيسية
+                    JPanel buttonPanel = new JPanel();
+                    buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+
+                    JButton editButton = new JButton("Edit");
+                    editButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            openEditProductFrame(storeOwnerName, productDetails, productPanel);
+                        }
+                    });
+                    buttonPanel.add(editButton);
+
+                    JButton deleteButton = new JButton("Delete");
+                    deleteButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            deleteProduct(storeOwnerName, productDetails, productPanel);
+                        }
+                    });
+                    buttonPanel.add(deleteButton);
+
+                    productItemPanel.add(buttonPanel);
+
                     productPanel.add(productItemPanel);
                 }
             }
             br.close();
-            productPanel.revalidate(); // تحديث اللوحة لعرض المنتجات الجديدة
+            productPanel.revalidate();
             productPanel.repaint();
+            System.out.println("Products loaded successfully."); // Debug message
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void openEditProductFrame(String storeOwnerName, String[] productDetails, JPanel productPanel) {
+        JFrame editProductFrame = new JFrame("Edit Product");
+        editProductFrame.setSize(400, 400);
+        editProductFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        editProductFrame.setLayout(null);
+
+        JLabel nameLabel = new JLabel("Product Name:");
+        nameLabel.setBounds(30, 30, 100, 25);
+        editProductFrame.add(nameLabel);
+
+        JTextField nameField = new JTextField(productDetails[1]);
+        nameField.setBounds(150, 30, 200, 25);
+        editProductFrame.add(nameField);
+
+        JLabel priceLabel = new JLabel("Price:");
+        priceLabel.setBounds(30, 70, 100, 25);
+        editProductFrame.add(priceLabel);
+
+        JTextField priceField = new JTextField(productDetails[2]);
+        priceField.setBounds(150, 70, 200, 25);
+        editProductFrame.add(priceField);
+
+        JLabel descriptionLabel = new JLabel("Description:");
+        descriptionLabel.setBounds(30, 110, 100, 25);
+        editProductFrame.add(descriptionLabel);
+
+        JTextField descriptionField = new JTextField(productDetails[3]);
+        descriptionField.setBounds(150, 110, 200, 25);
+        editProductFrame.add(descriptionField);
+
+        JLabel imageLabel = new JLabel("Image:");
+        imageLabel.setBounds(30, 150, 100, 25);
+        editProductFrame.add(imageLabel);
+
+        JButton chooseImageButton = new JButton("Choose Image");
+        chooseImageButton.setBounds(150, 150, 150, 25);
+        editProductFrame.add(chooseImageButton);
+
+        JLabel imagePreview = new JLabel();
+        imagePreview.setBounds(150, 180, 200, 100);
+        editProductFrame.add(imagePreview);
+
+        JButton saveButton = new JButton("Save Changes");
+        saveButton.setBounds(150, 300, 150, 25);
+        editProductFrame.add(saveButton);
+
+        final String[] imagePath = {productDetails[4]}; // Default to the current image path
+
+        // Display the current image
+        if (imagePath[0] != null) {
+            ImageIcon imageIcon = new ImageIcon(imagePath[0]);
+            Image image = imageIcon.getImage().getScaledInstance(200, 100, Image.SCALE_SMOOTH);
+            imagePreview.setIcon(new ImageIcon(image));
+        }
+
+        chooseImageButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileFilter(new FileNameExtensionFilter("Image files", ImageIO.getReaderFileSuffixes()));
+                int returnValue = fileChooser.showOpenDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    imagePath[0] = selectedFile.getAbsolutePath();
+                    ImageIcon imageIcon = new ImageIcon(imagePath[0]);
+                    Image image = imageIcon.getImage().getScaledInstance(200, 100, Image.SCALE_SMOOTH);
+                    imagePreview.setIcon(new ImageIcon(image));
+                }
+            }
+        });
+
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String newProductName = nameField.getText();
+                String newProductPrice = priceField.getText();
+                String newProductDescription = descriptionField.getText();
+
+                if (!newProductName.isEmpty() && !newProductPrice.isEmpty() && !newProductDescription.isEmpty()) {
+                    updateProduct(storeOwnerName, productDetails, newProductName, newProductPrice, newProductDescription, imagePath[0]);
+                    loadStoreOwnerProducts(storeOwnerName, productPanel); // Refresh the product panel
+                    editProductFrame.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(editProductFrame, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        editProductFrame.setVisible(true);
+    }
+
+    private void updateProduct(String storeOwnerName, String[] oldProductDetails, String newProductName, String newProductPrice, String newProductDescription, String newImagePath) {
+        try {
+            File inputFile = new File("products.txt");
+            File tempFile = new File("temp_products.txt");
+
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+            String currentLine;
+
+            while ((currentLine = reader.readLine()) != null) {
+                String[] productDetails = currentLine.split("\\|");
+                if (productDetails[0].equals(storeOwnerName) && productDetails[1].equals(oldProductDetails[1])) {
+                    writer.write(storeOwnerName + "|" + newProductName + "|" + newProductPrice + "|" + newProductDescription + "|" + newImagePath);
+                } else {
+                    writer.write(currentLine);
+                }
+                writer.newLine();
+            }
+            writer.close();
+            reader.close();
+
+            inputFile.delete();
+            tempFile.renameTo(inputFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteProduct(String storeOwnerName, String[] productDetails, JPanel productPanel) {
+        int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this product?", "Delete Confirmation", JOptionPane.YES_NO_OPTION);
+        if (confirmation == JOptionPane.YES_OPTION) {
+            try {
+                File inputFile = new File("products.txt");
+                File tempFile = new File("temp_products.txt");
+
+                BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+                BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+                String currentLine;
+
+                while ((currentLine = reader.readLine()) != null) {
+                    String[] currentProductDetails = currentLine.split("\\|");
+                    if (!(currentProductDetails[0].equals(storeOwnerName) && currentProductDetails[1].equals(productDetails[1]))) {
+                        writer.write(currentLine);
+                        writer.newLine();
+                    }
+                }
+                writer.close();
+                reader.close();
+
+                if (!inputFile.delete()) {
+                    System.out.println("Could not delete file");
+                    return;
+                }
+                if (!tempFile.renameTo(inputFile)) {
+                    System.out.println("Could not rename file");
+                    return;
+                }
+
+                loadStoreOwnerProducts(storeOwnerName, productPanel); // Refresh the product panel
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

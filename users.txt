@@ -7,4 +7,5 @@ User|carol_davis|p654|carol.davis@example.com|Jenin
 User|tas|11|e@gmail.com|Nablus
 StoreOwner|nareman|98765|nareman@gmail.com|ramallah
 StoreOwner|shahed|12345|shahed@gmail|nablus
+StoreOwner|masa|12345|masa@|nablus
 Admin|nareman|987654|n@1234|nablus
