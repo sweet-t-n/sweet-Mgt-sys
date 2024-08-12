@@ -111,7 +111,7 @@ public class MyApplication {
         JPasswordField passwordField = new JPasswordField();
         JTextField emailField = new JTextField();
         JTextField countryField = new JTextField();
-        JComboBox<String> roleComboBox = new JComboBox<>(new String[]{"User", "Admin", "Material Supplier"});
+        JComboBox<String> roleComboBox = new JComboBox<>(new String[]{"User", "Admin", "owner"});
 
         addCommonComponents(signUpFrame, usernameField, passwordField, emailField, countryField, roleComboBox);
 
