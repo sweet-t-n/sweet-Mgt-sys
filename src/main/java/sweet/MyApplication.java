@@ -10,7 +10,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
@@ -37,7 +40,7 @@ public class MyApplication {
     private JButton signInButton;
     private JTextArea outputArea;
     
-    private String imagePath;
+  
 
     public MyApplication() {
         loadUserData();  
@@ -2201,13 +2204,46 @@ public class MyApplication {
         viewCartButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                StringBuilder cartContents = new StringBuilder();
-                double total = 0;
-                for (String[] item : cart) {
-                    cartContents.append(item[1]).append(" - $").append(item[2]).append("\n");
-                    total += Double.parseDouble(item[2]);
+                JFrame cartFrame = new JFrame("Your Cart");
+                cartFrame.setSize(500, 400);
+                cartFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                cartFrame.setLayout(new BorderLayout());
+
+                JPanel cartPanel = new JPanel();
+                cartPanel.setLayout(new GridBagLayout());
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.insets = new Insets(5, 5, 5, 5); // Space between components
+                gbc.anchor = GridBagConstraints.WEST;
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                gbc.weightx = 1.0;
+
+                for (int i = 0; i < cart.size(); i++) {
+                    String[] item = cart.get(i);
+
+                    JLabel itemLabel = new JLabel(item[1] + " - $" + item[2]);
+                    gbc.gridx = 0;
+                    gbc.gridy = i;
+                    gbc.weightx = 0.8; // Label takes 80% of the width
+                    cartPanel.add(itemLabel, gbc);
+
+                    JButton removeButton = new JButton("Remove");
+                    gbc.gridx = 1;
+                    gbc.weightx = 0.2; 
+                    removeButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            cart.remove(item);
+                            cartFrame.dispose(); 
+                            viewCartButton.doClick(); 
+                        }
+                    });
+                    cartPanel.add(removeButton, gbc);
                 }
-                JOptionPane.showMessageDialog(buyFromStoresFrame, "Cart contents:\n" + cartContents.toString() + "\nTotal: $" + total, "Cart", JOptionPane.INFORMATION_MESSAGE);
+
+                JScrollPane cartScrollPane = new JScrollPane(cartPanel);
+                cartFrame.add(cartScrollPane, BorderLayout.CENTER);
+
+                cartFrame.setVisible(true);
             }
         });
 
