@@ -1,0 +1,34 @@
+Purchase Report
+User: tasneem
+Store Owner: nareman
+Purchases:
+ | sweet5 | $150
+ | sweet3 | $89
+Total Amount: $239.0
+------------------------------------------------------------
+Purchase Report
+User: tasneem
+Store Owner: nareman
+Purchases:
+ | sweet2 | $1000
+Total Amount: $1000.0
+------------------------------------------------------------
+Purchase Report
+User: tasneem
+Store Owner: nareman
+Purchases:
+Total Amount: $0.0
+------------------------------------------------------------
+Purchase Report
+User: tasneem
+Store Owner: nareman
+Purchases:
+ | sweet1 | $90
+ | sweet5 | $150
+ | sweet2 | $1000
+ | sweet1 | $90
+ | sweet1 | $90
+ | sweet1 | $100
+ | sweet5 | $150
+Total Amount: $1670.0
+------------------------------------------------------------

@@ -918,6 +918,14 @@ public class MyApplication {
             viewMessagesButton.setBounds(220, 50, 150, 25);
             roleFrame.add(viewMessagesButton);
 
+            JButton manageAccountButton = new JButton("Manage Account");
+            manageAccountButton.setBounds(390, 50, 150, 25);
+            roleFrame.add(manageAccountButton);
+
+            JButton processAndTrackOrdersButton = new JButton("Process and Track Orders");
+            processAndTrackOrdersButton.setBounds(50, 100, 250, 25); // موقع الزر
+            roleFrame.add(processAndTrackOrdersButton);
+
             JButton loadProductsButton = new JButton("Load Products");
             loadProductsButton.setBounds(50, 720, 150, 25); // Positioned at the bottom of the frame
             roleFrame.add(loadProductsButton);
@@ -925,7 +933,7 @@ public class MyApplication {
             JPanel productPanel = new JPanel();
             productPanel.setLayout(new BoxLayout(productPanel, BoxLayout.Y_AXIS));
             JScrollPane scrollPane = new JScrollPane(productPanel);
-            scrollPane.setBounds(50, 100, 500, 600); // Adjust height to fit above the loadProductsButton
+            scrollPane.setBounds(50, 130, 500, 570); // Adjust height to fit above the loadProductsButton
             roleFrame.add(scrollPane);
 
             addProductButton.addActionListener(new ActionListener() {
@@ -942,10 +950,24 @@ public class MyApplication {
                 }
             });
 
+            manageAccountButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    openManageAccountFrame(username);
+                }
+            });
+
+            processAndTrackOrdersButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                   // openProcessAndTrackOrdersFrame();
+                }
+            });
+
             loadProductsButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    loadStoreOwnerProducts(username, productPanel); // Call the method to load products
+                    loadStoreOwnerProducts(username, productPanel);
                 }
             });
 
@@ -956,6 +978,123 @@ public class MyApplication {
             openAdminDashboard();
         }
     }
+    ////////////////////////////////////
+    //Process and track orders [status].
+ 
+
+
+    
+    //////////////////////////////////////
+    ///manage owner account 
+    private void openManageAccountFrame(String username) {
+        JFrame manageAccountFrame = new JFrame("Manage Account");
+        manageAccountFrame.setSize(400, 400);
+        manageAccountFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        manageAccountFrame.setLayout(null);
+
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setBounds(50, 50, 100, 25);
+        manageAccountFrame.add(usernameLabel);
+
+        JTextField usernameField = new JTextField(username);
+        usernameField.setBounds(150, 50, 200, 25);
+        manageAccountFrame.add(usernameField);
+
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setBounds(50, 100, 100, 25);
+        manageAccountFrame.add(passwordLabel);
+
+        JPasswordField passwordField = new JPasswordField();
+        passwordField.setBounds(150, 100, 200, 25);
+        manageAccountFrame.add(passwordField);
+
+        JLabel emailLabel = new JLabel("Email:");
+        emailLabel.setBounds(50, 150, 100, 25);
+        manageAccountFrame.add(emailLabel);
+
+        JTextField emailField = new JTextField();
+        emailField.setBounds(150, 150, 200, 25);
+        manageAccountFrame.add(emailField);
+
+        JLabel countryLabel = new JLabel("Country:");
+        countryLabel.setBounds(50, 200, 100, 25);
+        manageAccountFrame.add(countryLabel);
+
+        JTextField countryField = new JTextField();
+        countryField.setBounds(150, 200, 200, 25);
+        manageAccountFrame.add(countryField);
+
+        JButton saveButton = new JButton("Save");
+        saveButton.setBounds(150, 250, 100, 25);
+        manageAccountFrame.add(saveButton);
+
+        
+        loadAccountDetails(username, passwordField, emailField, countryField);
+
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String newUsername = usernameField.getText();
+                String newPassword = new String(passwordField.getPassword());
+                String newEmail = emailField.getText();
+                String newCountry = countryField.getText();
+                saveAccountDetails(username, newUsername, newPassword, newEmail, newCountry);
+                JOptionPane.showMessageDialog(manageAccountFrame, "Account details updated successfully!");
+                manageAccountFrame.dispose();
+            }
+        });
+
+        manageAccountFrame.setVisible(true);
+    }
+    private void loadAccountDetails(String username, JPasswordField passwordField, JTextField emailField, JTextField countryField) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts[1].equals(username)) {
+                    passwordField.setText(parts[2]);
+                    emailField.setText(parts[3]);
+                    countryField.setText(parts[4]);
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void saveAccountDetails(String originalUsername, String newUsername, String newPassword, String newEmail, String newCountry) {
+       
+        List<String> lines = new ArrayList<>();
+        File inputFile = new File("users.txt");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                
+                if (parts[1].equals(originalUsername)) {
+                    line = parts[0] + "|" + newUsername + "|" + newPassword + "|" + newEmail + "|" + newCountry;
+                }
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(inputFile))) {
+            for (String line : lines) {
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
     
     //////////////////////////////////////////////////////////////
     //msg user and owner

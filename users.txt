@@ -1,5 +1,5 @@
 User|tasneem|12345|tasneem999@gmail.com|nablus
-User|masa|12345|masa@gmail|nablus
+User|masa|98765|masa@gmail|nabluss
 User|jane_smith|66|jane.smith@example.com|Jenin
 User|alice_johnson|666678|alice.johnson@example.com|Nablus
 User|bob_brown|456|bob.brown@example.com|Ramallah
@@ -7,5 +7,5 @@ User|carol_davis|p654|carol.davis@example.com|Jenin
 User|tas|11|e@gmail.com|Nablus
 StoreOwner|nareman|98765|nareman@gmail.com|ramallah
 StoreOwner|shahed|12345|shahed@gmail|nablus
-StoreOwner|masa|12345|masa@|nablus
+StoreOwner|masa|98765|masa@gmail|nablus
 Admin|nareman|987654|n@1234|nablus
