@@ -40,3 +40,14 @@ Total Amount: $1670.0
 
 ------------------------------------------------------------
 
+Purchase Report
+User: tasneem
+Store Owner: shahed
+Purchases:
+ | sweet6 | $100
+ | sweet6 | $100
+ | sweet6 | $100
+Total Amount: $300.0
+
+------------------------------------------------------------
+

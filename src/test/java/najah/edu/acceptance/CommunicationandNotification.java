@@ -15,13 +15,13 @@ public class CommunicationandNotification {
     @When("they choose to send a message to the user {string}")
     public void theyChooseToSendAMessageToTheUser(String user) {
         this.recipient = user;
-        // Simulate choosing to send a message
+       
     }
 
     @When("they enter the message {string}")
     public void theyEnterTheMessage(String message) {
         this.message = message;
-        // Simulate entering the message
+        
     }
 
     @When("they send the message")

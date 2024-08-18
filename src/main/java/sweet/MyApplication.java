@@ -3,6 +3,7 @@ package sweet;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -18,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -360,12 +362,12 @@ public class MyApplication {
         add.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // إنشاء إطار جديد لإدخال البيانات
+                   
                     JFrame inputFrame = new JFrame("Add User");
                     inputFrame.setSize(400, 300);
                     inputFrame.setLayout(null);
 
-                    // Label و TextField لإدخال الاسم
+                     
                     JLabel nameLabel = new JLabel("Owner Name:");
                     nameLabel.setBounds(20, 20, 150, 25);
                     inputFrame.add(nameLabel);
@@ -648,11 +650,11 @@ public class MyApplication {
     private void generateFinancialReports() {
         Map<String, Map<String, Double>> storeProductSales = new HashMap<>();
 
-        // Read sales data from the file
+       
         try (BufferedReader reader = new BufferedReader(new FileReader("sale.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Skip lines that do not contain sales data
+                
                 if (line.startsWith("Store")) {
                     String[] parts = line.split("\\|");
                     if (parts.length >= 4) {
@@ -713,13 +715,13 @@ public class MyApplication {
     private void displayUserStatsByCity() {
         Map<String, Integer> cityStats = new HashMap<>();
         
-        // قراءة بيانات المستخدمين من الملف
+        
         try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("\\|");
-                if (parts.length >= 5 && "User".equals(parts[0])) {  // التأكد من أن السطر يحتوي على التصنيف الصحيح
-                    String city = parts[4];  // المدينة في الجزء 4 من السطر
+                if (parts.length >= 5 && "User".equals(parts[0])) {  
+                    String city = parts[4];  
                     cityStats.put(city, cityStats.getOrDefault(city, 0) + 1);
                 }
             }
@@ -876,7 +878,7 @@ public class MyApplication {
             scrollPane.setBounds(50, 100, 400, 600);
             roleFrame.add(scrollPane);
 
-            loadPosts(username, imagePanel); // Load posts for the user
+            loadPosts(username, imagePanel); 
 
             postButton.addActionListener(new ActionListener() {
                 @Override
@@ -944,7 +946,7 @@ public class MyApplication {
             manageAccountButton.setBounds(390, 50, 150, 25);
             roleFrame.add(manageAccountButton);
 
-            // وضع الأزرار الجديدة جنب بعضها البعض
+            
             JButton monitorSalesButton = new JButton("Monitor Sales and Profits");
             monitorSalesButton.setBounds(50, 100, 180, 25);
             roleFrame.add(monitorSalesButton);
@@ -995,14 +997,14 @@ public class MyApplication {
             processAndTrackOrdersButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // openProcessAndTrackOrdersFrame();
+                     openProcessAndTrackOrdersFrame(username);
                 }
             });
 
             monitorSalesButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // Logic to monitor sales and profits
+                    
                 	openMonitorSalesFrame(username);                }
             });
 
@@ -1015,7 +1017,7 @@ public class MyApplication {
             dynamicDiscountButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // Logic to implement dynamic discounts
+                    
                 	displayDiscounts();
                 }
             });
@@ -1033,13 +1035,207 @@ public class MyApplication {
  else if (role.equals("Admin")) {
             openAdminDashboard();
         }
-        //////////////////////////////////////////
+    }
+  //////////////////////////////////////////
+    
+  //Process and track orders [status].
+    private void openProcessAndTrackOrdersFrame(String storeOwner) {
+        JFrame ordersFrame = new JFrame("Process and Track Orders");
+        ordersFrame.setSize(600, 400);
+        ordersFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        ordersFrame.setLayout(new BorderLayout());
+
+        JLabel titleLabel = new JLabel("Order Management", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Serif", Font.BOLD, 24));
+        ordersFrame.add(titleLabel, BorderLayout.NORTH);
+
+        // Table to display orders
+        String[] columnNames = {"Product Name", "Quantity", "Customer", "Status", "Store Owner"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        JTable orderTable = new JTable(model);
+        JScrollPane scrollPane = new JScrollPane(orderTable);
+        ordersFrame.add(scrollPane, BorderLayout.CENTER);
+
+        // Load orders from file filtered by store owner
+        loadOrdersFromFile(model, storeOwner);
+
+        // Panel for buttons
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+
+        JButton startProcessingButton = new JButton("Start Processing");
+        JButton changeStatusButton = new JButton("Change Order Status");
+        JButton viewStatusButton = new JButton("View Order Status");
+        JButton cancelOrderButton = new JButton("Cancel Order");
+        JButton viewDetailsButton = new JButton("View Details");
+
+        buttonPanel.add(startProcessingButton);
+        buttonPanel.add(changeStatusButton);
+        buttonPanel.add(viewStatusButton);
+        buttonPanel.add(cancelOrderButton);
+        buttonPanel.add(viewDetailsButton);
+        ordersFrame.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Add action listeners
+        startProcessingButton.addActionListener(e -> processOrder(orderTable));
+        changeStatusButton.addActionListener(e -> changeOrderStatus(orderTable));
+        viewStatusButton.addActionListener(e -> trackOrder(orderTable));
+        cancelOrderButton.addActionListener(e -> cancelOrder(orderTable));
+        viewDetailsButton.addActionListener(e -> viewOrderDetails(orderTable));
+
+        ordersFrame.setVisible(true);
+    }
+
+    private void processOrder(JTable orderTable) {
+        int selectedRow = orderTable.getSelectedRow();
+        if (selectedRow != -1) {
+            String productName = (String) orderTable.getValueAt(selectedRow, 0);
+            DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
+            model.setValueAt("Processing", selectedRow, 3); // Update status to "Processing"
+            updateOrderStatusInFile(productName, "Processing");
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select an order to start processing.");
+        }
+    }
+
+    private void changeOrderStatus(JTable orderTable) {
+        int selectedRow = orderTable.getSelectedRow();
+        if (selectedRow != -1) {
+            String[] statuses = {"Pending", "Processing", "Shipped", "Delivered", "Cancelled"};
+            JComboBox<String> statusComboBox = new JComboBox<>(statuses);
+            int result = JOptionPane.showConfirmDialog(null, statusComboBox, "Select New Status", JOptionPane.OK_CANCEL_OPTION);
+            if (result == JOptionPane.OK_OPTION) {
+                String newStatus = (String) statusComboBox.getSelectedItem();
+                if (newStatus != null) {
+                    DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
+                    String productName = (String) orderTable.getValueAt(selectedRow, 0);
+                    model.setValueAt(newStatus, selectedRow, 3); // Update status in table
+                    updateOrderStatusInFile(productName, newStatus);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select an order to update.");
+        }
+    }
+
+    private void trackOrder(JTable orderTable) {
+        int selectedRow = orderTable.getSelectedRow();
+        if (selectedRow != -1) {
+            String productName = (String) orderTable.getValueAt(selectedRow, 0);
+            String status = (String) orderTable.getValueAt(selectedRow, 3);
+            JOptionPane.showMessageDialog(null, "Order for " + productName + " is currently " + status + ".");
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select an order to view status.");
+        }
+    }
+
+    private void cancelOrder(JTable orderTable) {
+        int selectedRow = orderTable.getSelectedRow();
+        if (selectedRow != -1) {
+            int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel the selected order?", "Confirm Cancel", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
+                String productName = (String) orderTable.getValueAt(selectedRow, 0);
+                model.setValueAt("Cancelled", selectedRow, 3); // Update status to "Cancelled"
+                updateOrderStatusInFile(productName, "Cancelled");
+                model.removeRow(selectedRow); // Remove the row from the table
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select an order to cancel.");
+        }
+    }
+
+    private void viewOrderDetails(JTable orderTable) {
+        int selectedRow = orderTable.getSelectedRow();
+        if (selectedRow != -1) {
+            String productName = (String) orderTable.getValueAt(selectedRow, 0);
+            String quantity = (String) orderTable.getValueAt(selectedRow, 1);
+            String customer = (String) orderTable.getValueAt(selectedRow, 2);
+            String status = (String) orderTable.getValueAt(selectedRow, 3);
+            JOptionPane.showMessageDialog(null, "Order Details:\nProduct: " + productName + "\nQuantity: " + quantity + "\nCustomer: " + customer + "\nStatus: " + status);
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select an order to view details.");
+        }
+    }
+
+    private void loadOrdersFromFile(DefaultTableModel model, String storeOwner) {
+        // Clear existing rows in the table model
+        model.setRowCount(0);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("Purchase_Report.txt"))) {
+            String line;
+            String currentStoreOwner = "";
+            boolean inPurchases = false;
+
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("Store Owner:")) {
+                    currentStoreOwner = line.split(":")[1].trim();
+                } else if (line.startsWith("Purchases:")) {
+                    inPurchases = true;
+                } else if (line.startsWith("Total Amount:")) {
+                    inPurchases = false;
+                } else if (inPurchases && line.trim().startsWith("|")) {
+                    // Parse product details
+                    String[] parts = line.trim().split("\\|");
+                    if (parts.length > 1) {
+                        String productName = parts[1].trim();
+                        String quantity = "1"; // Default quantity as 1; adjust based on actual data if necessary
+                        String customer = "Customer"; // Placeholder; adjust if actual data is available
+
+                        // Only add rows if the store owner matches
+                        if (storeOwner.equals(currentStoreOwner)) {
+                            // Check if the product already exists in the table
+                            boolean found = false;
+                            for (int i = 0; i < model.getRowCount(); i++) {
+                                if (model.getValueAt(i, 0).equals(productName)) {
+                                    // Update quantity
+                                    int existingQuantity = Integer.parseInt((String) model.getValueAt(i, 1));
+                                    model.setValueAt(String.valueOf(existingQuantity + 1), i, 1);
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                // Add new row
+                                model.addRow(new Object[]{productName, quantity, customer, "Pending", storeOwner});
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateOrderStatusInFile(String productName, String newStatus) {
+        try {
+           
+            List<String> lines = Files.readAllLines(Paths.get("Purchase_Report.txt"));
+            try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("Purchase_Report.txt"))) {
+                for (String line : lines) {
+                    if (line.contains(productName)) {
+                        line = line.replaceFirst("Pending|Processing|Shipped|Delivered|Cancelled", newStatus);
+                    }
+                    writer.write(line);
+                    writer.newLine();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
      
-    }///////////////////////////////////////////
+    ///////////////////////////////////////////
     private double applyDiscount(double price, int quantity) {
-        // Apply a 10% discount if quantity is more than 10
+        
         if (quantity > 10) {
-            return price * 0.10; // 10% discount
+            return price * 0.10; 
         }
         return 0.0; // No discount
     }
