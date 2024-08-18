@@ -1,6 +1,5 @@
-Store1|ProductA|20|15.99
-Store1|ProductB|10|25.99
-Store2|ProductA|5|15.99
-Store2|ProductC|30|9.99
-Store3|ProductD|50|45.99
-Store3|ProductA|15|15.99
+Store1|sweet1|1|370.0
+Store1|sweet3|1|89.0
+Store1|sweet2|1|2000.0
+Store1|sweet5|1|450.0
+Total Sales: $2909.0

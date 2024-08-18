@@ -646,50 +646,70 @@ public class MyApplication {
         reportFrame.setVisible(true);
     }
     private void generateFinancialReports() {
-        Map<String, Double> storeProfits = new HashMap<>();
-        
-        // Read sales data from a file
+        Map<String, Map<String, Double>> storeProductSales = new HashMap<>();
+
+        // Read sales data from the file
         try (BufferedReader reader = new BufferedReader(new FileReader("sale.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\\|");
-                String store = parts[0];
-                double amount = Double.parseDouble(parts[2]);
+                // Skip lines that do not contain sales data
+                if (line.startsWith("Store")) {
+                    String[] parts = line.split("\\|");
+                    if (parts.length >= 4) {
+                        String store = parts[0].trim();
+                        String product = parts[1].trim();
+                        double amount = Double.parseDouble(parts[3].trim());
 
-                storeProfits.put(store, storeProfits.getOrDefault(store, 0.0) + amount);
+                        storeProductSales
+                            .computeIfAbsent(store, k -> new HashMap<>())
+                            .put(product, storeProductSales.get(store).getOrDefault(product, 0.0) + amount);
+                    }
+                }
             }
 
             // Display the report
-            displayReport(storeProfits);
+            displayReport1(storeProductSales);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error reading sales data file.");
             e.printStackTrace();
         }
     }
-    
-    private void displayReport(Map<String, Double> storeProfits) {
-        // Create a new JFrame to display the report
-        JFrame reportFrame = new JFrame("Financial Report");
-        reportFrame.setSize(400, 300);
-        reportFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        reportFrame.setLayout(new BoxLayout(reportFrame.getContentPane(), BoxLayout.Y_AXIS));
 
-        // Display the report data
+    private void displayReport1(Map<String, Map<String, Double>> storeProductSales) {
+        JFrame reportFrame = new JFrame("Financial Report");
+        reportFrame.setSize(600, 400);
+        reportFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        reportFrame.setLayout(new BorderLayout());
+
         JTextArea reportArea = new JTextArea();
         reportArea.setEditable(false);
-        
-        StringBuilder reportContent = new StringBuilder("Store Profits:\n");
-        for (Map.Entry<String, Double> entry : storeProfits.entrySet()) {
-            reportContent.append("Store: ").append(entry.getKey())
-                         .append(", Profit: ").append(entry.getValue()).append("\n");
-        }
-        
-        reportArea.setText(reportContent.toString());
         JScrollPane scrollPane = new JScrollPane(reportArea);
-        reportFrame.add(scrollPane);
+        reportFrame.add(scrollPane, BorderLayout.CENTER);
 
+        StringBuilder reportText = new StringBuilder();
+        for (Map.Entry<String, Map<String, Double>> storeEntry : storeProductSales.entrySet()) {
+            String store = storeEntry.getKey();
+            Map<String, Double> productSales = storeEntry.getValue();
+
+            reportText.append("Store: ").append(store).append("\n");
+            for (Map.Entry<String, Double> productEntry : productSales.entrySet()) {
+                String product = productEntry.getKey();
+                double totalAmount = productEntry.getValue();
+                reportText.append("  Product: ").append(product)
+                          .append(" | Total Sales: $").append(totalAmount).append("\n");
+            }
+            reportText.append("---------------------------\n");
+        }
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> reportFrame.dispose());
+        reportFrame.add(closeButton, BorderLayout.SOUTH);
+
+        reportArea.setText(reportText.toString());
         reportFrame.setVisible(true);
     }
+
+ 
     private void displayUserStatsByCity() {
         Map<String, Integer> cityStats = new HashMap<>();
         
@@ -741,29 +761,31 @@ public class MyApplication {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("\\|");
-                String store = parts[0];
-                String product = parts[1];
-                int quantity = Integer.parseInt(parts[2]);
-                String price = parts[3];
+                if (parts.length >= 4) {
+                    String store = parts[0];
+                    String product = parts[1];
+                    int quantity = Integer.parseInt(parts[2]);
+                    String price = parts[3];
 
-                storeProductSales
-                    .computeIfAbsent(store, k -> new HashMap<>())
-                    .put(product, storeProductSales.get(store).getOrDefault(product, 0) + quantity);
+                    storeProductSales
+                        .computeIfAbsent(store, k -> new HashMap<>())
+                        .put(product, storeProductSales.get(store).getOrDefault(product, 0) + quantity);
 
-                // Store the product details (product name and price)
-                productDetails.put(product, new String[]{product, price});
+                    // Store the product details (product name and price)
+                    productDetails.put(product, new String[]{product, price});
+                }
             }
 
-            displayBestSellingProducts(storeProductSales, productDetails);
+            displayBestSellingProducts1(storeProductSales, productDetails);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error reading sales data file.");
             e.printStackTrace();
         }
     }
 
-    private void displayBestSellingProducts(Map<String, Map<String, Integer>> storeProductSales, Map<String, String[]> productDetails) {
+    private void displayBestSellingProducts1(Map<String, Map<String, Integer>> storeProductSales, Map<String, String[]> productDetails) {
         JFrame bestSellingFrame = new JFrame("Best-Selling Products");
-        bestSellingFrame.setSize(400, 300);
+        bestSellingFrame.setSize(600, 400);
         bestSellingFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         bestSellingFrame.setLayout(new BorderLayout());
 
@@ -922,8 +944,21 @@ public class MyApplication {
             manageAccountButton.setBounds(390, 50, 150, 25);
             roleFrame.add(manageAccountButton);
 
+            // وضع الأزرار الجديدة جنب بعضها البعض
+            JButton monitorSalesButton = new JButton("Monitor Sales and Profits");
+            monitorSalesButton.setBounds(50, 100, 180, 25);
+            roleFrame.add(monitorSalesButton);
+
+            JButton bestSellingButton = new JButton("Best-Selling Products");
+            bestSellingButton.setBounds(240, 100, 180, 25);
+            roleFrame.add(bestSellingButton);
+
+            JButton dynamicDiscountButton = new JButton("Dynamic Discounts");
+            dynamicDiscountButton.setBounds(430, 100, 150, 25);
+            roleFrame.add(dynamicDiscountButton);
+
             JButton processAndTrackOrdersButton = new JButton("Process and Track Orders");
-            processAndTrackOrdersButton.setBounds(50, 100, 250, 25); // موقع الزر
+            processAndTrackOrdersButton.setBounds(50, 150, 250, 25);
             roleFrame.add(processAndTrackOrdersButton);
 
             JButton loadProductsButton = new JButton("Load Products");
@@ -933,7 +968,7 @@ public class MyApplication {
             JPanel productPanel = new JPanel();
             productPanel.setLayout(new BoxLayout(productPanel, BoxLayout.Y_AXIS));
             JScrollPane scrollPane = new JScrollPane(productPanel);
-            scrollPane.setBounds(50, 130, 500, 570); // Adjust height to fit above the loadProductsButton
+            scrollPane.setBounds(50, 190, 500, 510); // Adjust height to fit above the loadProductsButton
             roleFrame.add(scrollPane);
 
             addProductButton.addActionListener(new ActionListener() {
@@ -960,7 +995,28 @@ public class MyApplication {
             processAndTrackOrdersButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                   // openProcessAndTrackOrdersFrame();
+                    // openProcessAndTrackOrdersFrame();
+                }
+            });
+
+            monitorSalesButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Logic to monitor sales and profits
+                	openMonitorSalesFrame(username);                }
+            });
+
+            bestSellingButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                	identifyBestSellingProducts4();                }
+            });
+
+            dynamicDiscountButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Logic to implement dynamic discounts
+                	displayDiscounts();
                 }
             });
 
@@ -977,11 +1033,221 @@ public class MyApplication {
  else if (role.equals("Admin")) {
             openAdminDashboard();
         }
+        //////////////////////////////////////////
+     
+    }///////////////////////////////////////////
+    private double applyDiscount(double price, int quantity) {
+        // Apply a 10% discount if quantity is more than 10
+        if (quantity > 10) {
+            return price * 0.10; // 10% discount
+        }
+        return 0.0; // No discount
     }
-    ////////////////////////////////////
-    //Process and track orders [status].
- 
 
+    // Method to display products with discounts
+    private void displayDiscounts() {
+        JFrame discountFrame = new JFrame("Product Discounts");
+        discountFrame.setSize(600, 400);
+        discountFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        discountFrame.setLayout(new BorderLayout());
+
+        JTextArea discountArea = new JTextArea();
+        discountArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(discountArea);
+        discountFrame.add(scrollPane, BorderLayout.CENTER);
+
+        StringBuilder reportContent = new StringBuilder("Products and Discounts:\n");
+
+        // Read sales data and apply discounts
+        try (BufferedReader reader = new BufferedReader(new FileReader("sale.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length >= 4) {
+                    String product = parts[1].trim();
+                    int quantity = Integer.parseInt(parts[2].trim());
+                    double price = Double.parseDouble(parts[3].trim());
+
+                    double discount = applyDiscount(price, quantity);
+                    if (discount > 0) {
+                        reportContent.append("Product: ").append(product)
+                                     .append(" | Discount: $").append(discount)
+                                     .append("\n");
+                    }
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error reading sales data file.");
+            e.printStackTrace();
+        }
+
+        discountArea.setText(reportContent.toString());
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> discountFrame.dispose());
+        discountFrame.add(closeButton, BorderLayout.SOUTH);
+
+        discountFrame.setVisible(true);
+    }
+
+  
+    ////////////////////////////////////
+    private void identifyBestSellingProducts4() {
+        Map<String, Map<String, Integer>> storeProductSales = new HashMap<>();
+        Map<String, String> productPrices = new HashMap<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("sale.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length >= 4) {
+                    String store = parts[0].trim();
+                    String product = parts[1].trim();
+                    int quantity = Integer.parseInt(parts[2].trim());
+                    String price = parts[3].trim();
+                    
+                    storeProductSales
+                        .computeIfAbsent(store, k -> new HashMap<>())
+                        .put(product, storeProductSales.get(store).getOrDefault(product, 0) + quantity);
+
+                    productPrices.put(product, price);
+                }
+            }
+
+            displayBestSellingProducts2(storeProductSales, productPrices);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error reading sales data file.");
+            e.printStackTrace();
+        }
+    }
+
+    private void displayBestSellingProducts2(Map<String, Map<String, Integer>> storeProductSales, Map<String, String> productPrices) {
+        JFrame bestSellingFrame = new JFrame("Best-Selling Products");
+        bestSellingFrame.setSize(600, 400);
+        bestSellingFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        bestSellingFrame.setLayout(new BorderLayout());
+
+        JTextArea bestSellingArea = new JTextArea();
+        bestSellingArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(bestSellingArea);
+        bestSellingFrame.add(scrollPane, BorderLayout.CENTER);
+
+        StringBuilder reportContent = new StringBuilder("Best-Selling Products by Store:\n");
+
+        for (Map.Entry<String, Map<String, Integer>> storeEntry : storeProductSales.entrySet()) {
+            String store = storeEntry.getKey();
+            Map<String, Integer> productSales = storeEntry.getValue();
+
+            reportContent.append("Store: ").append(store).append("\n");
+
+            String bestSellingProduct = null;
+            int maxQuantity = 0;
+
+            for (Map.Entry<String, Integer> productEntry : productSales.entrySet()) {
+                if (productEntry.getValue() > maxQuantity) {
+                    maxQuantity = productEntry.getValue();
+                    bestSellingProduct = productEntry.getKey();
+                }
+            }
+
+            if (bestSellingProduct != null) {
+                reportContent.append("  Best-Selling Product: ").append(bestSellingProduct)
+                             .append(" | Quantity Sold: ").append(maxQuantity)
+                             .append(" | Price: ").append(productPrices.get(bestSellingProduct))
+                             .append("\n");
+
+                for (Map.Entry<String, Integer> productEntry : productSales.entrySet()) {
+                    if (!productEntry.getKey().equals(bestSellingProduct)) {
+                        reportContent.append("  Product: ").append(productEntry.getKey())
+                                     .append(" | Quantity Sold: ").append(productEntry.getValue())
+                                     .append(" | Price: ").append(productPrices.get(productEntry.getKey()))
+                                     .append("\n");
+                    }
+                }
+            }
+            
+            reportContent.append("---------------------------\n");
+        }
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> bestSellingFrame.dispose());
+        bestSellingFrame.add(closeButton, BorderLayout.SOUTH);
+
+        bestSellingArea.setText(reportContent.toString());
+        bestSellingFrame.setVisible(true);
+    }
+
+ ////////////////////////////////////////////////////////
+    private void openMonitorSalesFrame(String username) {
+        JFrame monitorSalesFrame = new JFrame("Monitor Sales and Profits");
+        monitorSalesFrame.setSize(500, 400);
+        monitorSalesFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        monitorSalesFrame.setLayout(null);
+
+        JLabel titleLabel = new JLabel("Sales and Profits Overview", SwingConstants.CENTER);
+        titleLabel.setBounds(50, 20, 400, 25);
+        monitorSalesFrame.add(titleLabel);
+
+        JTextArea resultArea = new JTextArea();
+        resultArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(resultArea);
+        scrollPane.setBounds(50, 60, 400, 200);
+        monitorSalesFrame.add(scrollPane);
+
+        try {
+            String inputFilePath = "Purchase_Report_temp.txt";
+            String outputFilePath = "sale.txt";
+            BufferedReader reader = new BufferedReader(new FileReader(inputFilePath));
+            String line;
+            Map<String, Double> salesData = new HashMap<>();
+            double totalSales = 0.0;
+
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith(" |")) {
+                    String[] parts = line.split("\\|");
+                    String productName = parts[1].trim();
+                    double price = Double.parseDouble(parts[2].trim().replace("$", ""));
+                    
+                    salesData.put(productName, salesData.getOrDefault(productName, 0.0) + price);
+                    totalSales += price;
+                }
+            }
+            reader.close();
+
+            StringBuilder resultText = new StringBuilder();
+            for (Map.Entry<String, Double> entry : salesData.entrySet()) {
+                String product = entry.getKey();
+                double totalProductSales = entry.getValue();
+                resultText.append("Store1|").append(product).append("|1|").append(totalProductSales).append("\n");
+            }
+            resultText.append("Total Sales: $").append(totalSales).append("\n");
+            resultArea.setText(resultText.toString());
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath));
+            writer.write(resultText.toString());
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            resultArea.setText("Error reading sales data.");
+        }
+
+        JButton closeButton = new JButton("Close");
+        closeButton.setBounds(200, 300, 100, 25);
+        monitorSalesFrame.add(closeButton);
+
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                monitorSalesFrame.dispose();
+            }
+        });
+
+        monitorSalesFrame.setVisible(true);
+    }
+
+
+   
 
     
     //////////////////////////////////////
