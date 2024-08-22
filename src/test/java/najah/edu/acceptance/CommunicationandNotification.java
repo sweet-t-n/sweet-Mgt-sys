@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 
 public class CommunicationandNotification {
 
+	
     private String recipient;
     private String message;
     private boolean messageSent;
