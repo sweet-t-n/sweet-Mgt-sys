@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 
 public class Post {
 
+	
     private String username;
     private String description;
     private String image;
