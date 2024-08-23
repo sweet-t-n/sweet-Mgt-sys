@@ -11,8 +11,7 @@ import static org.junit.Assert.*;
 
 public class Signup {
 
-    private String username;
-    private String password;
+    private User user;  
     private boolean signupSuccess = false;
     private String feedbackMessage = "";
 
@@ -28,23 +27,22 @@ public class Signup {
 
     @Given("that the user {string} is not sign up")
     public void givenUserIsNotSignUp(String username) {
-        this.username = username;
+        user = new User(username, "defaultPassword", "defaultEmail", "defaultCountry");
     }
 
     @Given("they do not have an account in the system")
     public void givenUserDoesNotHaveAccount() {
-        usersWithAccounts.remove(username);
+        usersWithAccounts.remove(user.getUsername());
     }
 
     @Given("they do have an account in the system")
     public void givenUserHasAccount() {
-        usersWithAccounts.add(username);
+        usersWithAccounts.add(user.getUsername());
     }
 
     @When("the user enters a username {string} and password {string}")
     public void whenUserEntersUsernameAndPassword(String username, String password) {
-        this.username = username;
-        this.password = password;
+        user = new User(username, password, "defaultEmail", "defaultCountry");
 
         if (existingUsernames.contains(username) || usersWithAccounts.contains(username)) {
             signupSuccess = false;
@@ -77,5 +75,36 @@ public class Signup {
     @Then("the user is prompted to try again")
     public void thenUserIsPromptedToTryAgain() {
         assertFalse("User should be prompted to try again", signupSuccess);
+    }
+
+    // User class for managing user data
+    private static class User {
+        private String username;
+        private String password;
+        private String email;
+        private String country;
+
+        public User(String username, String password, String email, String country) {
+            this.username = username;
+            this.password = password;
+            this.email = email;
+            this.country = country;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public String getCountry() {
+            return country;
+        }
     }
 }
