@@ -28,6 +28,6 @@ public class MessagingService {
 
     // New method to get success message
     public String getSuccessMessage() {
-        return "Message sent";  // Update message to match test expectation
+        return "Message sent"; 
     }
 }
