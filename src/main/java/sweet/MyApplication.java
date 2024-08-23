@@ -4,7 +4,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.BorderLayout;
@@ -22,9 +21,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MyApplication {
@@ -33,7 +34,11 @@ public class MyApplication {
     private static ArrayList<StoreOwner> storeOwnerList = new ArrayList<>();
     private static ArrayList<Admin> adminList = new ArrayList<>();
     private static ArrayList<MaterialSupplier> materialSupplierList = new ArrayList<>();
-
+    private login loginManager;
+    private CommunicationandNotification communication;
+    private signUp signUp;
+    private Set<String> registeredUsers = new HashSet<>();
+    private String feedbackMessage;
     private JFrame frame;
     private JTextField usernameField;
     private JPasswordField passwordField;
@@ -45,6 +50,10 @@ public class MyApplication {
   
 
     public MyApplication() {
+        this.loginManager = new login();
+        this.communication = new CommunicationandNotification();
+        this.signUp = new signUp();
+
         loadUserData();  
         frame = new JFrame("Sweet Management System");
         frame.setSize(400, 350);
@@ -105,7 +114,66 @@ public class MyApplication {
 
         frame.setVisible(true);
     }
+    public boolean sendMessage(String recipient, String message) {
+        return communication.sendMessage(recipient, message);
+    }
 
+
+    public String receiveMessage(String sender) {
+        return communication.receiveMessage(sender);
+    }
+
+    public boolean isMessageSentConfirmationDisplayed() {
+        return communication.isMessageSentConfirmationDisplayed();
+    }
+
+    public void markMessageAsRead(String message) {
+        communication.markMessageAsRead(message);
+    }
+
+    public boolean isMessageRead(String message) {
+        return communication.isMessageRead(message);
+    }
+    public void setCredentials(String username, String password) {
+        loginManager.setCredentials(username, password);
+    }
+
+    // تسجيل الدخول
+    public boolean login(String username, String password) {
+        loginManager.login(username, password);
+        return loginManager.isLoggedIn();
+    }
+
+    // التحقق من حالة تسجيل الدخول
+    public boolean isLoggedIn(String username) {
+        return loginManager.isLoggedIn();
+    }
+
+    // تسجيل الخروج
+    public void logout(String username) {
+        loginManager.logout();
+    }
+    
+    
+    
+    public boolean signUp(String username, String password, String email, String country) {
+        if (registeredUsers.contains(username)) {
+            feedbackMessage =signUp.getFeedbackMessage();
+            return false;
+        } else {
+            registeredUsers.add(username);
+            feedbackMessage =signUp.getFeedbackMessage() ;
+            return true;
+        }
+    }
+
+    public String getSignUpFeedback() {
+        return feedbackMessage;
+    }
+
+    public void removeUser(String username) {
+        registeredUsers.remove(username);
+    }
     private void openSignUpFrame() {
         JFrame signUpFrame = new JFrame("Sign Up");
         signUpFrame.setSize(400, 400);
@@ -3349,4 +3417,5 @@ public class MyApplication {
     public static void main(String[] args) {
         new MyApplication();
     }
+
 }
