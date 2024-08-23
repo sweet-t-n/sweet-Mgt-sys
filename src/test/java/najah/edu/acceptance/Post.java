@@ -3,8 +3,13 @@ package najah.edu.acceptance;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import sweet.post;
 
 import static org.junit.Assert.*;
+
+import java.time.LocalDateTime;
+
+import org.junit.Test;
 
 public class Post {
 
@@ -63,5 +68,34 @@ public class Post {
     public void thePostShouldFailWithAnErrorMessage(String expectedErrorMessage) {
         assertFalse("Post should not be created", postSuccess);
         assertEquals("Error message should match", expectedErrorMessage, errorMessage);
+    }
+
+
+    @Test
+    public void testPostCreation() {
+        assertEquals("Test Title", post.getTitle());
+        assertEquals("Test Content", post.getContent());
+        assertEquals("Test Author", post.getAuthor());
+    }
+
+    @Test
+    public void testSettersAndGetters() {
+        post post2 = new post(null, null, null);
+		post2.setTitle("Updated Title");
+        post post = new post(null, null, null);
+		post.setContent("Updated Content");
+        post.setAuthor("Updated Author");
+
+        assertEquals("Updated Title", post.getTitle());
+        assertEquals("Updated Content", post.getContent());
+        assertEquals("Updated Author", post.getAuthor());
+    }
+
+    @Test
+    public void testTimestamp() {
+        LocalDateTime now = LocalDateTime.now();
+        // Allow for slight difference in time
+        assertEquals(true, post.getTimestamp().isAfter(now.minusSeconds(1)));
+        assertEquals(true, post.getTimestamp().isBefore(now.plusSeconds(1)));
     }
 }

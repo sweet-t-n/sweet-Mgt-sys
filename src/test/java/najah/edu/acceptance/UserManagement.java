@@ -3,9 +3,13 @@ package najah.edu.acceptance;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
+
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import sweet.MyApplication;
 
 public class UserManagement {
 	
@@ -13,7 +17,8 @@ public class UserManagement {
     private boolean isUserCreated;
     private boolean isUserInList;
     private boolean areDetailsUpdated;
-   
+ 
+
 
     @Given("I am logged in as an admin")
     public void iAmLoggedInAsAnAdmin() {
@@ -111,6 +116,5 @@ public class UserManagement {
         assertFalse("User should no longer appear in the list of store owners", isUserCreated1);
         System.out.println("User no longer appears in the list of store owners");
     }
-
-
+  
 }

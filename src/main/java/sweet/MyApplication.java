@@ -204,7 +204,7 @@ public class MyApplication {
                         if (userExists) {
                             JOptionPane.showMessageDialog(signUpFrame, "User already exists.");
                         } else {
-                            userList.add(new User(username, password, email, country));
+                            boolean b = userList.add(null);
                             saveUserData();
                             JOptionPane.showMessageDialog(signUpFrame, "User registered successfully.");
                         }
@@ -3426,6 +3426,10 @@ public class MyApplication {
     public static void main(String[] args) {
         new MyApplication();
     }
+
+
+
+	
 
 
 
