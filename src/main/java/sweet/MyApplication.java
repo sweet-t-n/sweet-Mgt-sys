@@ -18,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -143,11 +144,11 @@ public class MyApplication {
     
     public boolean signUp(String username, String password, String email, String country) {
         if (registeredUsers.contains(username)) {
-            feedbackMessage =signUp.getFeedbackMessage();
+            feedbackMessage = "Sign up failed: username already exists";
             return false;
         } else {
-            registeredUsers.add(username);
-            feedbackMessage =signUp.getFeedbackMessage() ;
+            registeredUsers.add(username);  // تسجيل المستخدم الجديد
+            feedbackMessage = "Sign up successful, redirected to login page";
             return true;
         }
     }
@@ -157,12 +158,21 @@ public class MyApplication {
     }
 
     public void removeUser(String username) {
-    	 if (registeredUsers.contains(username)) {
-    		 registeredUsers.remove(username);
-             System.out.println("User " + username + " removed successfully.");
-         } else {
-             System.out.println("User " + username + " not found.");
-         }    
+        if (registeredUsers.contains(username)) {
+            registeredUsers.remove(username);
+            System.out.println("User " + username + " removed successfully.");
+        } else {
+            System.out.println("User " + username + " not found.");
+        }
+    }
+
+   
+    public boolean simulateRedirectToLoginPage(String username, boolean success) {
+        if (success) {
+            feedbackMessage = "Sign up successful, redirected to login page";
+            return true;
+        }
+        return false;
     }
     private void openSignUpFrame() {
         JFrame signUpFrame = new JFrame("Sign Up");
@@ -3367,30 +3377,29 @@ public class MyApplication {
 
     //////////////////////////////////
     private void deletePost(String username, String imagePath, String description) {
-        try {
-            File inputFile = new File(username + "_posts.txt");
-            File tempFile = new File(username + "_posts_temp.txt");
+        Path inputFile = Paths.get(username + "_posts.txt");
+        Path tempFile = Paths.get(username + "_posts_temp.txt");
 
-            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
-
+        try (
+            BufferedReader reader = Files.newBufferedReader(inputFile);
+            BufferedWriter writer = Files.newBufferedWriter(tempFile)
+        ) {
             String line;
+            String targetLine = imagePath + "|" + description;
+
             while ((line = reader.readLine()) != null) {
-                if (!line.equals(imagePath + "|" + description)) {
+                if (!line.equals(targetLine)) {
                     writer.write(line);
                     writer.newLine();
                 }
             }
-            reader.close();
-            writer.close();
 
-            if (!inputFile.delete()) {
-                System.out.println("Could not delete file");
-            }
-            if (!tempFile.renameTo(inputFile)) {
-                System.out.println("Could not rename file");
-            }
+            // Ensure the original file is deleted and replaced by the temp file
+            Files.deleteIfExists(inputFile);
+            Files.move(tempFile, inputFile);
+
         } catch (IOException e) {
+            System.err.println("Error while deleting post: " + e.getMessage());
             e.printStackTrace();
         }
     }

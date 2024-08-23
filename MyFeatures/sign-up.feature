@@ -19,4 +19,5 @@ Feature: User Sign Up
   Scenario: User prompted to try again on failed sign up
     Given that the user "tasneem" is signed up
     When the user enters a username "tasneem", password "wrongPassword", email "tasneem@example.com", and country "WrongCountry"
-    Then the user is prompted to try again
+    Then the sign up fails
+    And the user is prompted to try again
