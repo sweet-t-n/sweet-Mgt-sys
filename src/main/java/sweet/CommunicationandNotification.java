@@ -2,46 +2,42 @@ package sweet;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CommunicationandNotification {
+    private static final Logger logger = Logger.getLogger(CommunicationandNotification.class.getName());
+    private Map<String, String> messages = new HashMap<>();
+    private Map<String, Boolean> messageReadStatus = new HashMap<>();
+    private boolean confirmationDisplayed = false;
 
-    private Map<String, String> messages; // لتخزين الرسائل
-    private Map<String, Boolean> messageStatus; // لتخزين حالة الرسائل (مقروءة/غير مقروءة)
-
-    public CommunicationandNotification() {
-        messages = new HashMap<>();
-        messageStatus = new HashMap<>();
-    }
-
-    // إرسال رسالة
     public boolean sendMessage(String recipient, String message) {
-        // تسجيل الرسالة المرسلة
+        logger.log(Level.INFO, "Sending message to {0}: {1}", new Object[]{recipient, message});
         messages.put(recipient, message);
-        messageStatus.put(message, false); // الرسالة غير مقروءة في البداية
-        return true; // افترض أن الرسالة أُرسلت بنجاح
+        messageReadStatus.put(message, false); // تعيين حالة الرسالة على أنها غير مقروءة عند الإرسال
+        confirmationDisplayed = true;
+        return true;
     }
 
-    // استلام رسالة
-    public String receiveMessage(String sender) {
-        // افترض أنك تحصل على الرسالة بناءً على المرسل
-        return messages.getOrDefault(sender, "لا توجد رسائل");
+    public String receiveMessage(String recipient) {
+        String message = messages.getOrDefault(recipient, "لا توجد رسائل");
+        logger.log(Level.INFO, "Receiving message for {0}: {1}", new Object[]{recipient, message});
+        return message;
     }
 
-    // تأكيد عرض الرسالة
     public boolean isMessageSentConfirmationDisplayed() {
-        // افترض أنك تحقق من عرض التأكيد هنا
-        return true; // افترض أن التأكيد دائمًا يعرض
+        return confirmationDisplayed;
     }
 
-    // تعيين الرسالة كمقروءة
     public void markMessageAsRead(String message) {
-        if (messageStatus.containsKey(message)) {
-            messageStatus.put(message, true);
+        logger.log(Level.INFO, "Marking message as read: {0}", message);
+        if (messages.containsValue(message)) {
+            messageReadStatus.put(message, true);
         }
     }
 
-    // التحقق مما إذا كانت الرسالة مقروءة
     public boolean isMessageRead(String message) {
-        return messageStatus.getOrDefault(message, false);
+        logger.log(Level.INFO, "Checking if message is read: {0}", message);
+        return messageReadStatus.getOrDefault(message, false);
     }
 }

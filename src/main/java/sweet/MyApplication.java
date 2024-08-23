@@ -34,7 +34,7 @@ public class MyApplication {
     private static ArrayList<StoreOwner> storeOwnerList = new ArrayList<>();
     private static ArrayList<Admin> adminList = new ArrayList<>();
     private static ArrayList<MaterialSupplier> materialSupplierList = new ArrayList<>();
-    private login loginManager;
+    private login login;
     private CommunicationandNotification communication;
     private signUp signUp;
     private Set<String> registeredUsers = new HashSet<>();
@@ -46,14 +46,14 @@ public class MyApplication {
     private JButton signUpButton;
     private JButton signInButton;
     private JTextArea outputArea;
-    
-  
+   
+
 
     public MyApplication() {
-        this.loginManager = new login();
+        this.login = new login();
         this.communication = new CommunicationandNotification();
         this.signUp = new signUp();
-
+        this.registeredUsers = new HashSet<>();
         loadUserData();  
         frame = new JFrame("Sweet Management System");
         frame.setSize(400, 350);
@@ -114,46 +114,60 @@ public class MyApplication {
 
         frame.setVisible(true);
     }
+   
     public boolean sendMessage(String recipient, String message) {
+        // تحقق من إرسال الرسالة
         return communication.sendMessage(recipient, message);
     }
 
-
-    public String receiveMessage(String sender) {
-        return communication.receiveMessage(sender);
+    // استقبال رسالة
+    public String receiveMessage(String recipient) {
+        // استقبل الرسالة من المستخدم
+        return communication.receiveMessage(recipient);
     }
 
+    // التحقق من ظهور تأكيد إرسال الرسالة
     public boolean isMessageSentConfirmationDisplayed() {
+        // تحقق مما إذا كان تأكيد الإرسال قد تم عرضه
         return communication.isMessageSentConfirmationDisplayed();
     }
 
+    // تعيين الرسالة كمقروءة
     public void markMessageAsRead(String message) {
+        // تعيين الرسالة كمقروءة
         communication.markMessageAsRead(message);
     }
 
+    // التحقق مما إذا كانت الرسالة مقروءة
     public boolean isMessageRead(String message) {
+        // تحقق مما إذا كانت الرسالة قد تم قراءتها
         return communication.isMessageRead(message);
     }
-    public void setCredentials(String username, String password) {
-        loginManager.setCredentials(username, password);
-    }
 
-    // تسجيل الدخول
+
+
     public boolean login(String username, String password) {
-        loginManager.login(username, password);
-        return loginManager.isLoggedIn();
+        if (registeredUsers.contains(username)) {
+            login.setCredentials(username, password); // Set credentials
+            return login.login(username, password); // Attempt login
+        } else {
+            return false;
+        }
     }
 
-    // التحقق من حالة تسجيل الدخول
-    public boolean isLoggedIn(String username) {
-        return loginManager.isLoggedIn();
-    }
-
-    // تسجيل الخروج
     public void logout(String username) {
-        loginManager.logout();
+        if (registeredUsers.contains(username)) {
+            login.logout(); // Log out
+        }
     }
-    
+
+    public boolean isLoggedIn(String username) {
+        return login.isLoggedIn();
+    }
+
+    public String getLoginFeedback() {
+        return login.isLoggedIn() ? "Login successful" : "Login failed";
+    }
     
     
     public boolean signUp(String username, String password, String email, String country) {
@@ -172,7 +186,12 @@ public class MyApplication {
     }
 
     public void removeUser(String username) {
-        registeredUsers.remove(username);
+    	 if (registeredUsers.contains(username)) {
+    		 registeredUsers.remove(username);
+             System.out.println("User " + username + " removed successfully.");
+         } else {
+             System.out.println("User " + username + " not found.");
+         }    
     }
     private void openSignUpFrame() {
         JFrame signUpFrame = new JFrame("Sign Up");
@@ -250,6 +269,25 @@ public class MyApplication {
         });
 
         signUpFrame.setVisible(true);
+    }
+    public boolean checkIfUserExists(String username) {
+        boolean exists = false;
+        String filePath = "users.txt"; // مسار ملف المستخدمين
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // افترض أن كل سطر يحتوي على اسم المستخدم فقط
+                if (line.equals(username)) {
+                    exists = true;
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return exists;
     }
 
     private void handleSignIn() {
@@ -3417,5 +3455,7 @@ public class MyApplication {
     public static void main(String[] args) {
         new MyApplication();
     }
+
+
 
 }

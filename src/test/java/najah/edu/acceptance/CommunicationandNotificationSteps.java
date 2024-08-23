@@ -6,7 +6,6 @@ import static org.junit.Assert.*;
 import sweet.CommunicationandNotification;
 
 public class CommunicationandNotificationSteps {
-
     private CommunicationandNotification communication;
     private String recipient;
     private String message;
@@ -28,11 +27,7 @@ public class CommunicationandNotificationSteps {
         this.message = message;
     }
 
-    @When("they send the message")
-    public void theySendTheMessage() {
-        messageSent = communication.sendMessage(recipient, message);
-    }
-
+ 
     @Then("the message should be sent successfully")
     public void theMessageShouldBeSentSuccessfully() {
         assertTrue("The message should be sent successfully", messageSent);
@@ -48,10 +43,16 @@ public class CommunicationandNotificationSteps {
         receivedMessage = communication.receiveMessage(sender);
         messageRead = false;
     }
+    @When("they send the message")
+    public void theySendTheMessage() {
+        messageSent = communication.sendMessage(recipient, message);
+    }
 
     @Then("they should see the message {string}")
     public void theyShouldSeeTheMessage(String expectedMessage) {
-        assertEquals("The message received should match", expectedMessage, receivedMessage);
+    	  receivedMessage = communication.receiveMessage(recipient);
+          assertEquals("The message received should match", expectedMessage, receivedMessage);
+      
     }
 
     @Then("the message should be marked as read")
@@ -60,4 +61,16 @@ public class CommunicationandNotificationSteps {
         messageRead = communication.isMessageRead(receivedMessage);
         assertTrue("The message should be marked as read", messageRead);
     }
+   
+    @When("they choose to send a message to the supplier {string}")
+    public void theyChooseToSendAMessageToTheSupplier(String supplier) {
+        this.recipient = supplier;
+    }
+
+   
+
+  
+
+
+
 }

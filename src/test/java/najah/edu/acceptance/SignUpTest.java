@@ -24,6 +24,7 @@ public class SignUpTest {
 
         boolean result = myApplication.signUp(username, password, email, country);
         assertTrue("Sign up should succeed", result);
+        assertEquals("Sign up successful", myApplication.getSignUpFeedback());
     }
 
     @Test
@@ -33,9 +34,15 @@ public class SignUpTest {
         String email = "tasneem@example.com";
         String country = "ExistingCountry";
 
+        // Ensure user is already signed up
+        myApplication.signUp(username, password, email, country);
+
+        // Attempt to sign up with the same username
         boolean result = myApplication.signUp(username, password, email, country);
         assertFalse("Sign up should fail due to existing username", result);
+        assertEquals("Sign up failed: username already exists", myApplication.getSignUpFeedback());
     }
+
 
     @Test
     public void testUserRedirectedToLoginPageOnSuccessfulSignUp() {
@@ -45,9 +52,11 @@ public class SignUpTest {
         String country = "RedirectCountry";
 
         boolean result = myApplication.signUp(username, password, email, country);
-        assertTrue("User should be redirected to the login page", result);
-        // Add additional checks if needed to confirm redirection
+        assertTrue("Sign up should succeed", result);
+        // This assumes that successful sign-up implies redirection to login
+        assertEquals("Sign up successful", myApplication.getSignUpFeedback());
     }
+
 
     @Test
     public void testUserPromptedToTryAgainOnFailedSignUp() {
@@ -56,8 +65,13 @@ public class SignUpTest {
         String email = "tasneem@example.com";
         String country = "WrongCountry";
 
+        // Ensure user is already signed up
+        myApplication.signUp(username, "password", "email@example.com", "country");
+
+        // Attempt to sign up with wrong details
         boolean result = myApplication.signUp(username, password, email, country);
         assertFalse("User should be prompted to try again", result);
-        // Add additional checks if needed to confirm prompt
+        assertEquals("Sign up failed: please try again", myApplication.getSignUpFeedback());
     }
+
 }

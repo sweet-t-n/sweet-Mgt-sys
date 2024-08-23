@@ -1,49 +1,57 @@
-Feature: Login Functionality
+Feature: Login
 
-  Scenario: User can login successfully
-    Given "tasneem" is not logged in
-    When "tasneem" tries to login with role "user"
-    And password is "123456"
-    Then "tasneem" login succeeds
+  Scenario: user login
+    Given that the user "tasneem" is not logged in
+    When user tries to login
+    And  password is "123456"
+    Then the user login succeeds
+    And the user is logged in
 
-  Scenario: User cannot login with incorrect password
-    Given "tasneem" is not logged in
-    When "tasneem" tries to login with role "user"
-    And password is "wrongpassword"
-    Then "tasneem" login fails
+  Scenario: user cannot login
+    Given that the user "tasneem" is not logged in
+    When user tries to login
+    And  password is "wrongpassword"
+    Then the user login fails
+    And the user is not logged in
 
-  Scenario: Admin can login successfully
-    Given "nareman" is not logged in
-    When "nareman" tries to login with role "admin"
-    And password is "654321"
-    Then "nareman" login succeeds
+  Scenario: admin can login
+    Given that the admin "nareman" is not logged in
+    When admin tries to login
+    And  password is "654321"
+    Then the admin login succeeds
+    And the admin is logged in
 
-  Scenario: Admin cannot login with incorrect password
-    Given "nareman" is not logged in
-    When "nareman" tries to login with role "admin"
-    And password is "wrongpassword"
-    Then "nareman" login fails
+  Scenario: admin cannot login
+    Given that the admin "nareman" is not logged in
+    When admin tries to login
+    And  password is "wrongpassword"
+    Then the admin login fails
+    And the admin is not logged in
 
-  Scenario: Owner can login successfully
-    Given "masa" is not logged in
-    When "masa" tries to login with role "owner"
-    And password is "9999"
-    Then "masa" login succeeds
+  Scenario: owner can login
+    Given that the owner "masa" is not logged in
+    When owner tries to login
+    And  password is "9999"
+    Then the owner login succeeds
+    And the owner is logged in
 
-  Scenario: Owner cannot login with incorrect password
-    Given "masa" is not logged in
-    When "masa" tries to login with role "owner"
-    And password is "wrongpassword"
-    Then "masa" login fails
+  Scenario: owner cannot login
+    Given that the owner "masa" is not logged in
+    When owner tries to login
+    And  password is "wrongpassword"
+    Then the owner login fails
+    And the owner is not logged in
 
-  Scenario: Supplier can login successfully
-    Given "nuha" is not logged in
-    When "nuha" tries to login with role "supplier"
-    And password is "9876"
-    Then "nuha" login succeeds
+  Scenario: supplier can login
+    Given that the supplier "nuha" is not logged in
+    When supplier tries to login
+    And  password is "9876"
+    Then the supplier login succeeds
+    And the supplier is logged in
 
-  Scenario: Supplier cannot login with incorrect password
-    Given "nuha" is not logged in
-    When "nuha" tries to login with role "supplier"
-    And password is "wrongpassword"
-    Then "nuha" login fails
+  Scenario: supplier cannot login
+    Given that the supplier "nuhaa" is not logged in
+    When supplier tries to login
+    And  password is "wrongpassword"
+    Then the supplier login fails
+    And the supplier is not logged in
