@@ -37,4 +37,9 @@ public class MessagingTest {
     public void theyShouldSeeTheMessage(String expectedMessage) {
         assertEquals("Expected message to be displayed, but it wasn't.", expectedMessage, messagingService.getLastMessage());
     }
+
+    @Then("a confirmation should be displayed")
+    public void aConfirmationShouldBeDisplayed() {
+        assertTrue("A confirmation should be displayed", messagingService.isConfirmationDisplayed());
+    }
 }
