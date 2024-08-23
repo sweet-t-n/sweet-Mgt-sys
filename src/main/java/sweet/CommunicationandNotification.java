@@ -10,8 +10,13 @@ public class CommunicationandNotification {
     private Map<String, String> messages = new HashMap<>();
     private Map<String, Boolean> messageReadStatus = new HashMap<>();
     private boolean confirmationDisplayed = false;
+	private MyApplication myApplication;
 
-    public boolean sendMessage(String recipient, String message) {
+    public CommunicationandNotification(MyApplication myApplication) {
+        this.myApplication = myApplication;
+	}
+
+	public boolean sendMessage(String recipient, String message) {
         logger.log(Level.INFO, "Sending message to {0}: {1}", new Object[]{recipient, message});
         messages.put(recipient, message);
         messageReadStatus.put(message, false); // تعيين حالة الرسالة على أنها غير مقروءة عند الإرسال

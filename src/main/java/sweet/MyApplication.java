@@ -51,7 +51,7 @@ public class MyApplication {
 
     public MyApplication() {
         this.login = new login();
-        this.communication = new CommunicationandNotification();
+        this.communication = new CommunicationandNotification(null);
         this.signUp = new signUp();
         this.registeredUsers = new HashSet<>();
         loadUserData();  
@@ -113,35 +113,6 @@ public class MyApplication {
         });
 
         frame.setVisible(true);
-    }
-   
-    public boolean sendMessage(String recipient, String message) {
-        // تحقق من إرسال الرسالة
-        return communication.sendMessage(recipient, message);
-    }
-
-    // استقبال رسالة
-    public String receiveMessage(String recipient) {
-        // استقبل الرسالة من المستخدم
-        return communication.receiveMessage(recipient);
-    }
-
-    // التحقق من ظهور تأكيد إرسال الرسالة
-    public boolean isMessageSentConfirmationDisplayed() {
-        // تحقق مما إذا كان تأكيد الإرسال قد تم عرضه
-        return communication.isMessageSentConfirmationDisplayed();
-    }
-
-    // تعيين الرسالة كمقروءة
-    public void markMessageAsRead(String message) {
-        // تعيين الرسالة كمقروءة
-        communication.markMessageAsRead(message);
-    }
-
-    // التحقق مما إذا كانت الرسالة مقروءة
-    public boolean isMessageRead(String message) {
-        // تحقق مما إذا كانت الرسالة قد تم قراءتها
-        return communication.isMessageRead(message);
     }
 
 

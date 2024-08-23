@@ -1,77 +1,80 @@
 package najah.edu.acceptance;
 
-import org.junit.Before;
-import org.junit.Test;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
 import static org.junit.Assert.*;
 
 import sweet.MyApplication;
 
 public class SignUpTest {
-
+    private String username;
+    private String password;
+    private String email;
+    private String country;
+    private boolean signupSuccess;
+    private String feedbackMessage;
     private MyApplication myApplication;
 
-    @Before
-    public void setUp() {
-        myApplication = new MyApplication();
+    public SignUpTest() {
+        this.myApplication = new MyApplication();
     }
 
-    @Test
-    public void testSignUpSuccess() {
-        String username = "newUser";
-        String password = "newPassword";
-        String email = "newUser@example.com";
-        String country = "NewCountry";
-
-        boolean result = myApplication.signUp(username, password, email, country);
-        assertTrue("Sign up should succeed", result);
-        assertEquals("Sign up successful", myApplication.getSignUpFeedback());
+    @Given("that the user {string} is not signed up")
+    public void givenUserIsNotSignedUp(String username) {
+        this.username = username;
+        // Ensure the user is not in the system
+        myApplication.removeUser(username);  // Ensure this method exists in MyApplication
     }
 
-    @Test
-    public void testSignUpFailureDueToExistingUsername() {
-        String username = "tasneem"; // Assuming this username already exists
-        String password = "password";
-        String email = "tasneem@example.com";
-        String country = "ExistingCountry";
+    @When("the user enters a username {string}, password {string}, email {string}, and country {string}")
+    public void whenUserEntersDetails(String username, String password, String email, String country) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.country = country;
 
-        // Ensure user is already signed up
-        myApplication.signUp(username, password, email, country);
-
-        // Attempt to sign up with the same username
-        boolean result = myApplication.signUp(username, password, email, country);
-        assertFalse("Sign up should fail due to existing username", result);
-        assertEquals("Sign up failed: username already exists", myApplication.getSignUpFeedback());
+        // Call the signUp method from MyApplication
+        signupSuccess = myApplication.signUp(username, password, email, country);
+        feedbackMessage = myApplication.getSignUpFeedback(); // Get feedback message from MyApplication
     }
 
-
-    @Test
-    public void testUserRedirectedToLoginPageOnSuccessfulSignUp() {
-        String username = "redirectUser";
-        String password = "redirectPassword";
-        String email = "redirectUser@example.com";
-        String country = "RedirectCountry";
-
-        boolean result = myApplication.signUp(username, password, email, country);
-        assertTrue("Sign up should succeed", result);
-        // This assumes that successful sign-up implies redirection to login
-        assertEquals("Sign up successful", myApplication.getSignUpFeedback());
+    @Then("the sign up succeeds")
+    public void thenSignUpSucceeds() {
+        assertTrue(signupSuccess);
+        assertEquals("Sign up successful", feedbackMessage);
     }
 
-
-    @Test
-    public void testUserPromptedToTryAgainOnFailedSignUp() {
-        String username = "tasneem"; // Assuming this username already exists
-        String password = "wrongPassword";
-        String email = "tasneem@example.com";
-        String country = "WrongCountry";
-
-        // Ensure user is already signed up
-        myApplication.signUp(username, "password", "email@example.com", "country");
-
-        // Attempt to sign up with wrong details
-        boolean result = myApplication.signUp(username, password, email, country);
-        assertFalse("User should be prompted to try again", result);
-        assertEquals("Sign up failed: please try again", myApplication.getSignUpFeedback());
+    @Then("the sign up fails")
+    public void thenSignUpFails() {
+        assertFalse(signupSuccess);
+        assertEquals("Sign up failed: username already exists", feedbackMessage);
     }
 
+    @Given("that the user {string} is signed up")
+    public void givenUserIsSignedUp(String username) {
+        this.username = username;
+        // Ensure the user is in the system
+        myApplication.signUp(username, "password", "email@example.com", "country"); // Ensure this is a valid sign-up
+    }
+
+    @When("the user enters a username {string} and password {string}")
+    public void whenUserEntersUsernameAndPassword(String username, String password) {
+        this.username = username;
+        this.password = password;
+        // Attempt to log in
+        signupSuccess = myApplication.login(username, password);
+        feedbackMessage = myApplication.getLoginFeedback(); // Get feedback message from MyApplication
+    }
+
+    @Then("the user is redirected to the login page")
+    public void thenUserIsRedirectedToLoginPage() {
+        assertTrue("User should be redirected to the login page", feedbackMessage.contains("redirected to login page"));
+    }
+
+    @Then("the user is prompted to try again")
+    public void thenUserIsPromptedToTryAgain() {
+        assertEquals("Sign up failed: please try again", feedbackMessage);
+    }
 }

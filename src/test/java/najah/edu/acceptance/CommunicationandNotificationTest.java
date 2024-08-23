@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import sweet.CommunicationandNotification;
 import sweet.MyApplication;
 
@@ -14,12 +16,15 @@ public class CommunicationandNotificationTest {
 
     private CommunicationandNotification communication;
     private MyApplication myApplication;
+    private String recipient;
+    private String message;
 
     @Before
     public void setUp() {
         myApplication = new MyApplication();
-        communication = new CommunicationandNotification(); // Pass MyApplication to CommunicationandNotification
-    }
+        communication = new CommunicationandNotification(myApplication); // تأكد من أن CommunicationandNotification 
+        System.out.println("CommunicationandNotification initialized: " + (communication != null));    }
+
 
     @Test
     public void testSendMessage() {
@@ -27,15 +32,13 @@ public class CommunicationandNotificationTest {
         assertTrue("The message should be sent successfully", result);
     }
 
-
-
     @Test
     public void testReceiveMessage() {
         communication.sendMessage("user1", "Shipment details are confirmed");
 
-        // إضافة تأخير بسيط إذا لزم الأمر
+        // Add delay if needed
         try {
-            Thread.sleep(500); // تأخير لمدة نصف ثانية
+            Thread.sleep(500); // Delay for half a second
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -86,5 +89,58 @@ public class CommunicationandNotificationTest {
         communication.sendMessage("user1", "Shipment details are confirmed");
         communication.markMessageAsRead("Shipment details are confirmed");
         assertTrue("The message should be marked as read", communication.isMessageRead("Shipment details are confirmed"));
+    }
+
+    @When("they choose to send a message to the user {string}")
+    public void theyChooseToSendAMessageToTheUser(String user) {
+        this.recipient = user;
+    }
+
+    @When("they enter the message {string}")
+    public void theyEnterTheMessage(String message) {
+        this.message = message;
+    }
+
+    @When("they send the message")
+    public void theySendTheMessage() {
+        boolean result = communication.sendMessage(recipient, message);
+        assertTrue("The message should be sent successfully", result);
+    }
+
+    @Then("the message should be sent successfully")
+    public void theMessageShouldBeSentSuccessfully() {
+        // Verify the message was sent successfully
+        String receivedMessage = communication.receiveMessage(recipient);
+        assertEquals("The received message should be as expected", message, receivedMessage);
+    }
+
+    @Then("a confirmation should be displayed")
+    public void aConfirmationShouldBeDisplayed() {
+        assertTrue("The confirmation should be displayed", communication.isMessageSentConfirmationDisplayed());
+    }
+
+    @When("they receive a new message from {string}")
+    public void theyReceiveANewMessageFrom(String sender) {
+        // Simulate receiving a new message
+        communication.sendMessage(sender, message);
+    }
+
+    @Then("they should see the message {string}")
+    public void theyShouldSeeTheMessage(String expectedMessage) {
+        String actualMessage = communication.receiveMessage(recipient);
+        assertEquals("The message should be as expected", expectedMessage, actualMessage);
+    }
+
+    @Then("the message should be marked as read")
+    public void theMessageShouldBeMarkedAsRead() {
+        assertTrue("The message should be marked as read", communication.isMessageRead(message));
+    }
+
+    public MyApplication getMyApplication() {
+        return myApplication;
+    }
+
+    public void setMyApplication(MyApplication myApplication) {
+        this.myApplication = myApplication;
     }
 }
