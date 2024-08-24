@@ -16,6 +16,7 @@ public class MessagingTest {
     public MessagingTest() {
         messagingService = new MessagingService();
     }
+    
 
     @Given("they are on the messaging page")
     public void theyAreOnTheMessagingPage() {
