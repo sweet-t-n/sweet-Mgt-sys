@@ -1,11 +1,6 @@
 package sweet;
 
-import java.lang.System.Logger.Level;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.SimpleFormatter;
 
-import io.cucumber.core.logging.Logger;
 
 public class login {
     private String username;
