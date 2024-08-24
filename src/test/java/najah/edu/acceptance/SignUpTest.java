@@ -5,15 +5,16 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import sweet.signUp;
+import sweet.SignUp;
+
 
 public class SignUpTest {
 
-    private signUp signup;
+    private SignUp signup;
 
     @Before
     public void setUp() {
-        signup = new signUp();
+        signup = new SignUp();
     }
 
     @Test
@@ -43,7 +44,7 @@ public class SignUpTest {
     @Test
     public void testWhenUserEntersUsernameAndPasswordSuccess() {
         // تسجيل مستخدم جديد باستخدام whenUserEntersUsernameAndPassword
-        signup.whenUserEntersUsernameAndPassword("newUser", "password");
+        signup.whenUserEntersUsernameAndPassword("newUser");
         assertTrue(signup.isSignupSuccessful());
         assertTrue(signup.isUserRegistered("newUser"));
         assertEquals("Sign up successful", signup.getFeedbackMessage());
@@ -52,8 +53,8 @@ public class SignUpTest {
     @Test
     public void testWhenUserEntersUsernameAndPasswordFailure() {
         // تسجيل مستخدم موجود مسبقاً باستخدام whenUserEntersUsernameAndPassword
-        signup.whenUserEntersUsernameAndPassword("existingUser", "password");
-        signup.whenUserEntersUsernameAndPassword("existingUser", "newPassword");
+        signup.whenUserEntersUsernameAndPassword("existingUser");
+        signup.whenUserEntersUsernameAndPassword("existingUser ");
         assertFalse(signup.isSignupSuccessful());
         assertEquals("Sign up failed: username already exists", signup.getFeedbackMessage());
     }
@@ -61,16 +62,16 @@ public class SignUpTest {
     @Test
     public void testFeedbackMessageIsNotNull() {
         // تحقق من أن رسالة التعليقات ليست null
-        signup.whenUserEntersUsernameAndPassword("user", "password");
+        signup.whenUserEntersUsernameAndPassword("user");
         assertNotNull(signup.getFeedbackMessage());
     }
 
     @Test
     public void testSignupSuccessFlagReset() {
         // اختبار تأكيد إعادة تعيين العلم signupSuccess بعد تسجيل مستخدم
-        signup.whenUserEntersUsernameAndPassword("user1", "password1");
+        signup.whenUserEntersUsernameAndPassword("user1");
         assertTrue(signup.isSignupSuccessful());
-        signup.whenUserEntersUsernameAndPassword("user1", "password2");
+        signup.whenUserEntersUsernameAndPassword("user1");
         assertFalse(signup.isSignupSuccessful());
     }
 }
