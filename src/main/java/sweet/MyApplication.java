@@ -105,34 +105,34 @@ public class MyApplication {
         return 0.0;
     }
 
-    private void loadUserData() {
-        try (Scanner scanner = new Scanner(new File("users.txt"))) {
-            while (scanner.hasNextLine()) {
-                String[] data = scanner.nextLine().split("\\|");
-                if (data.length < 5) continue; // Skip invalid lines
-
-                switch (data[0]) {
-                    case "User":
-                        userList.add(new User(data[1], data[2], data[3], data[4]));
-                        break;
-                    case "StoreOwner":
-                        storeOwnerList.add(new StoreOwner(data[1], data[2], data[3], data[4]));
-                        break;
-                    case "Admin":
-                        adminList.add(new Admin(data[1], data[2], data[3], data[4]));
-                        break;
-                    case "MaterialSupplier":
-                        materialSupplierList.add(new MaterialSupplier(data[1], data[2], data[3], data[4]));
-                        break;
-                    default:
-                        logger.warning("Unknown user type: " + data[0]);
-                        break;
-                }
+   private void loadUserData() {
+    try (Scanner scanner = new Scanner(new File("users.txt"))) {
+        while (scanner.hasNextLine()) {
+            String[] data = scanner.nextLine().split("\\|");
+            if (data.length < 5) continue; // Skip invalid lines
+            switch (data[0]) {
+                case "User":
+                    userList.add(new User(data[1], data[2], data[3], data[4]));
+                    break;
+                case "StoreOwner":
+                    storeOwnerList.add(new StoreOwner(data[1], data[2], data[3], data[4]));
+                    break;
+                case "Admin":
+                    adminList.add(new Admin(data[1], data[2], data[3], data[4]));
+                    break;
+                case "MaterialSupplier":
+                    materialSupplierList.add(new MaterialSupplier(data[1], data[2], data[3], data[4]));
+                    break;
+                default:
+                    logger.warning(String.format("Unknown user type: %s", data[0]));
+                    break;
             }
-        } catch (FileNotFoundException e) {
-            logger.severe("Error loading user data: " + e.getMessage());
         }
+    } catch (FileNotFoundException e) {
+        logger.severe(String.format("Error loading user data: %s", e.getMessage()));
     }
+}
+
 
     public static void main(String[] args) {
         new MyApplication();
