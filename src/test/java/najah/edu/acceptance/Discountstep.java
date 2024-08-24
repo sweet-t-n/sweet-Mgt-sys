@@ -1,10 +1,12 @@
-package sweet;
+package najah.edu.acceptance;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DiscountTest {
+import sweet.MyApplication;
+
+public class Discountstep {
 
     private MyApplication app;
 

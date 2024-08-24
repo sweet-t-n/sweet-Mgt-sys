@@ -1,4 +1,4 @@
-package sweet;
+package najah.edu.acceptance;
 
 import static org.junit.Assert.*;
 
@@ -7,6 +7,8 @@ import javax.swing.table.DefaultTableModel;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import sweet.MyApplication;
 
 public class OrderTrackingTest {
 

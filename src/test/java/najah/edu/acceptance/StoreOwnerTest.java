@@ -1,8 +1,10 @@
-package sweet;
+package najah.edu.acceptance;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import sweet.StoreOwner;
 
 public class StoreOwnerTest {
 

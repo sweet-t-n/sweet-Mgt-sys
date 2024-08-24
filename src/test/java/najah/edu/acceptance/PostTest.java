@@ -1,61 +1,94 @@
 package najah.edu.acceptance;
 
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 import static org.junit.Assert.*;
+
+import org.junit.Test;
+
 import sweet.Post;
+
+import java.time.LocalDateTime;
 
 public class PostTest {
 
-    private Post post;
-    private boolean postCreationSuccess;
-    private String errorMessage;
-    private String postDescription;
-    private String postImagePath;
-
-    @Given("the user {string} is logged in")
-    public void userIsLoggedIn(String username) {
-        // Simulate user login, e.g., set up user session or state.
-        System.out.println("User " + username + " is logged in.");
+    @Test
+    public void testPostCreation() {
+        Post post = new Post("Title", "Content", "Author", "path/to/image.jpg");
+        assertEquals("Title", post.getTitle());
+        assertEquals("Content", post.getContent());
+        assertEquals("Author", post.getAuthor());
+        assertNotNull(post.getTimestamp());
+        assertEquals("path/to/image.jpg", post.getImagePath());
     }
 
-    @When("the user posts content with description {string} and image {string}")
-    public void userPostsContent(String description, String imagePath) {
-        if (description.isEmpty()) {
-            postCreationSuccess = false;
-            errorMessage = "Description cannot be empty";
-        } else if (imagePath.isEmpty()) {
-            postCreationSuccess = false;
-            errorMessage = "Image cannot be empty";
-        } else {
-            // Create the post
-            post = new Post("Sample Title", description, "Sample Author", imagePath);
-            postCreationSuccess = true;
-            errorMessage = "";
-            postDescription = post.getContent();
-            postImagePath = post.getImagePath();
+    @Test
+    public void testSetters() {
+        Post post = new Post("Title", "Content", "Author", "path/to/image.jpg");
+        post.setTitle("New Title");
+        post.setContent("New Content");
+        post.setAuthor("New Author");
+        post.setImagePath("new/path/to/image.jpg");
+
+        assertEquals("New Title", post.getTitle());
+        assertEquals("New Content", post.getContent());
+        assertEquals("New Author", post.getAuthor());
+        assertEquals("new/path/to/image.jpg", post.getImagePath());
+    }
+
+    @Test
+    public void testDefaultValues() {
+        Post post = new Post("", "", "", "");
+        assertEquals("", post.getTitle());
+        assertEquals("", post.getContent());
+        assertEquals("", post.getAuthor());
+        assertNotNull(post.getTimestamp());
+        assertEquals("", post.getImagePath());
+    }
+
+    @Test
+    public void testEmptyValues() {
+        try {
+            Post post = new Post("", "", "", "");
+            assertEquals("", post.getTitle());
+            assertEquals("", post.getContent());
+            assertEquals("", post.getAuthor());
+            assertEquals("", post.getImagePath());
+            // Ensure no exceptions are thrown
+        } catch (Exception e) {
+            fail("Exception should not be thrown");
         }
     }
 
-    @Then("the post should be successfully created")
-    public void postShouldBeCreated() {
-        assertTrue("Post creation was expected to succeed but it failed.", postCreationSuccess);
+    @Test
+    public void testTimestamp() {
+        Post post = new Post("Title", "Content", "Author", "path/to/image.jpg");
+        assertNotNull(post.getTimestamp());
     }
 
-    @Then("the post description should be {string}")
-    public void postDescriptionShouldBe(String description) {
-        assertEquals("The post description does not match the expected value.", description, postDescription);
+    @Test
+    public void testImagePath() {
+        Post post = new Post("Title", "Content", "Author", "path/to/image.jpg");
+        assertEquals("path/to/image.jpg", post.getImagePath());
+
+        post.setImagePath("new/path/to/image.jpg");
+        assertEquals("new/path/to/image.jpg", post.getImagePath());
     }
 
-    @Then("the post image should be {string}")
-    public void postImageShouldBe(String imagePath) {
-        assertEquals("The post image path does not match the expected value.", imagePath, postImagePath);
-    }
+  
 
-    @Then("the post should fail with an error message {string}")
-    public void postShouldFailWithErrorMessage(String expectedErrorMessage) {
-        assertFalse("Post creation was expected to fail but it succeeded.", postCreationSuccess);
-        assertEquals("The error message does not match the expected value.", expectedErrorMessage, errorMessage);
+    @Test
+    public void testNullValues() {
+        Post post = new Post("Title", "Content", "Author", "path/to/image.jpg");
+        post.setTitle(null);
+        post.setContent(null);
+        post.setAuthor(null);
+        post.setImagePath(null);
+
+        assertNull(post.getTitle());
+        assertNull(post.getContent());
+        assertNull(post.getAuthor());
+        assertNull(post.getImagePath());
     }
+ 
+
 }
+

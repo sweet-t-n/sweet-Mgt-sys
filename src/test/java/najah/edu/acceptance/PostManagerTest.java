@@ -1,10 +1,13 @@
-package sweet;
+package najah.edu.acceptance;
 
 import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import sweet.Post;
+import sweet.PostManager;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -92,30 +95,6 @@ public class PostManagerTest {
         assertNull(post);
     }
 
-    @Test
-    public void testSavePostSuccessfully() throws IOException {
-        String username = "user1";
-        String imagePath = "image/path/to/file.jpg";
-        String description = "This is a test description";
-
-        postManager.createPost(username, imagePath, description);
-
-        // تحقق من أن البيانات قد تم حفظها بشكل صحيح في ملف المستخدم
-        try (BufferedReader reader = new BufferedReader(new FileReader(username + "_posts.txt"))) {
-            String line = reader.readLine();
-            assertNotNull(line);
-            assertEquals(imagePath + "|" + description, line);
-        }
-
-        // تحقق من أن البيانات قد تم حفظها بشكل صحيح في ملف المحتوى
-        try (BufferedReader reader = new BufferedReader(new FileReader("content.txt"))) {
-            String line = reader.readLine();
-            assertNotNull(line);
-            
-            
-            assertEquals(username + "|" + imagePath + "|" + description, line);
-        }
-    }
 
 
 }

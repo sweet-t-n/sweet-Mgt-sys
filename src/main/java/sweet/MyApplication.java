@@ -1181,7 +1181,7 @@ public class MyApplication {
         }
     }
 
-    String changeOrderStatus(JTable orderTable, String newStatus) {
+    public String changeOrderStatus(JTable orderTable, String newStatus) {
         int selectedRow = orderTable.getSelectedRow();
         if (selectedRow != -1) {
             DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
@@ -1196,7 +1196,7 @@ public class MyApplication {
     }
 
 
-    boolean trackOrder(JTable orderTable) {
+    public boolean trackOrder(JTable orderTable) {
         int selectedRow = orderTable.getSelectedRow();
         if (selectedRow != -1) {
             String productName = (String) orderTable.getValueAt(selectedRow, 0);

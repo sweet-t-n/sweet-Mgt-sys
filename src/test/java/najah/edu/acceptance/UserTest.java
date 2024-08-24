@@ -1,4 +1,4 @@
-package sweet;
+package najah.edu.acceptance;
 
 import static org.junit.Assert.*;
 
@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import sweet.User;
 
 public class UserTest {
 
