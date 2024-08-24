@@ -1,15 +1,12 @@
 package sweet;
 
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
-
 public class MyApplication {
-
     private static ArrayList<User> userList = new ArrayList<>();
     private static ArrayList<StoreOwner> storeOwnerList = new ArrayList<>();
     private static ArrayList<Admin> adminList = new ArrayList<>();
@@ -17,42 +14,33 @@ public class MyApplication {
     private login login;
     private Set<String> registeredUsers = new HashSet<>();
     private String feedbackMessage;
- 
    
-
-
     public MyApplication() {
         this.login = new login();
         this.registeredUsers = new HashSet<>();
         loadUserData();  
-      
     }
-
-
 
     public boolean login(String username, String password) {
         if (registeredUsers.contains(username)) {
-            login.setCredentials(username, password); // Set credentials
-            return login.login(username, password); // Attempt login
+            login.setCredentials(username, password); // تعيين بيانات الاعتماد
+            return login.login(username, password); // محاولة تسجيل الدخول
         } else {
             return false;
         }
     }
 
-    public void logout(String username) {
-        if (registeredUsers.contains(username)) {
-            login.logout(); // Log out
-        }
+    public void logout() {
+        login.logout(); // تسجيل الخروج
     }
 
-    public boolean isLoggedIn(String username) {
+    public boolean isLoggedIn() {
         return login.isLoggedIn();
     }
 
     public String getLoginFeedback() {
         return login.isLoggedIn() ? "Login successful" : "Login failed";
     }
-    
     
     public boolean signUp(String username, String password, String email, String country) {
         if (registeredUsers.contains(username)) {
@@ -77,9 +65,8 @@ public class MyApplication {
             System.out.println("User " + username + " not found.");
         }
     }
-
-   
-    public boolean simulateRedirectToLoginPage(String username, boolean success) {
+    
+    public boolean simulateRedirectToLoginPage(boolean success) {
         if (success) {
             feedbackMessage = "Sign up successful, redirected to login page";
             return true;
@@ -106,24 +93,14 @@ public class MyApplication {
         
         return exists;
     }
-    
 
-     
-   
     public double applyDiscount(double price, int quantity) {
-        
         if (quantity > 10) {
             return price * 0.10; 
         }
-        return 0.0; // No discount
+        return 0.0; // لا يوجد خصم
     }
-
-    // Method to display products with discounts
-   
     
-  
-
-
     private void loadUserData() {
         try (Scanner scanner = new Scanner(new File("users.txt"))) {
             while (scanner.hasNextLine()) {
@@ -152,25 +129,11 @@ public class MyApplication {
         new MyApplication();
     }
 
+    public ArrayList<User> getUser(String string) {
+        return null;
+    }
 
-
-	public ArrayList<User> getUser(String string) {
-		return null;
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-	public void addUser(User user) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-	
-
-
-
+    public void addUser(User user) {
+        // TODO
+    }
 }
