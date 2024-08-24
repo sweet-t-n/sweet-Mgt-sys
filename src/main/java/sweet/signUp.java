@@ -59,4 +59,3 @@ public class signUp {
         this.username = username;
     }
 }
-
