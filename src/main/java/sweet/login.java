@@ -8,7 +8,7 @@ public class login {
     private boolean loggedIn;
 
     // Constructor
-    public Login() {
+    public login() {
         this.loggedIn = false; // Initially, no user is logged in
     }
 
