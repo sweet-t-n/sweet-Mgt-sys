@@ -138,11 +138,9 @@ public class MyApplication {
         new MyApplication();
     }
 
-    public ArrayList<User> getUser(String string) {
-        return null;
-    }
+   
 
     public void addUser(User user) {
-        // TODO
+        
     }
 }
