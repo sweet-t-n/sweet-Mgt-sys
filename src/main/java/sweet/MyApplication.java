@@ -1163,7 +1163,7 @@ public class MyApplication {
 
         // Add action listeners
         startProcessingButton.addActionListener(e -> processOrder(orderTable));
-        changeStatusButton.addActionListener(e -> changeOrderStatus(orderTable));
+        changeStatusButton.addActionListener(e -> changeOrderStatus(orderTable, storeOwner));
         viewStatusButton.addActionListener(e -> trackOrder(orderTable));
         cancelOrderButton.addActionListener(e -> cancelOrder(orderTable));
         viewDetailsButton.addActionListener(e -> viewOrderDetails(orderTable));
@@ -1183,36 +1183,34 @@ public class MyApplication {
         }
     }
 
-    private void changeOrderStatus(JTable orderTable) {
+    String changeOrderStatus(JTable orderTable, String newStatus) {
         int selectedRow = orderTable.getSelectedRow();
         if (selectedRow != -1) {
-            String[] statuses = {"Pending", "Processing", "Shipped", "Delivered", "Cancelled"};
-            JComboBox<String> statusComboBox = new JComboBox<>(statuses);
-            int result = JOptionPane.showConfirmDialog(null, statusComboBox, "Select New Status", JOptionPane.OK_CANCEL_OPTION);
-            if (result == JOptionPane.OK_OPTION) {
-                String newStatus = (String) statusComboBox.getSelectedItem();
-                if (newStatus != null) {
-                    DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
-                    String productName = (String) orderTable.getValueAt(selectedRow, 0);
-                    model.setValueAt(newStatus, selectedRow, 3); // Update status in table
-                    updateOrderStatusInFile(productName, newStatus);
-                }
-            }
+            DefaultTableModel model = (DefaultTableModel) orderTable.getModel();
+            String productName = (String) orderTable.getValueAt(selectedRow, 0);
+            model.setValueAt(newStatus, selectedRow, 3); // Update status in table
+            updateOrderStatusInFile(productName, newStatus);
+            return newStatus;
         } else {
             JOptionPane.showMessageDialog(null, "Please select an order to update.");
+            return null;
         }
     }
 
-    private void trackOrder(JTable orderTable) {
+
+    boolean trackOrder(JTable orderTable) {
         int selectedRow = orderTable.getSelectedRow();
         if (selectedRow != -1) {
             String productName = (String) orderTable.getValueAt(selectedRow, 0);
             String status = (String) orderTable.getValueAt(selectedRow, 3);
             JOptionPane.showMessageDialog(null, "Order for " + productName + " is currently " + status + ".");
+            return true; // صف محدد
         } else {
-            JOptionPane.showMessageDialog(null, "Please select an order to view status.");
+            // هنا لن يتم عرض رسالة
+            return false; // لا يوجد صف محدد
         }
     }
+
 
     private void cancelOrder(JTable orderTable) {
         int selectedRow = orderTable.getSelectedRow();
