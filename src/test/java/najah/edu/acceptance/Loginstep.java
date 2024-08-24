@@ -30,9 +30,9 @@ public class Loginstep {
     @Test
     public void testUserLoginSuccess() {
         String username = "user";
-        String password = "123456";
+        
         myApplication.signUp(username);
-        boolean result = myApplication.login(username, password);
+        boolean result = myApplication.login(username);
         assertTrue("User login should succeed", result);
         assertTrue("User should be logged in", myApplication.isLoggedIn());
     }
@@ -40,9 +40,9 @@ public class Loginstep {
     @Test
     public void testAdminLoginSuccess() {
         String username = "admin";
-        String password = "654321";
+        
         myApplication.signUp(username);
-        boolean result = myApplication.login(username, password);
+        boolean result = myApplication.login(username);
         assertTrue("Admin login should succeed", result);
         assertTrue("Admin should be logged in", myApplication.isLoggedIn());
     }
@@ -50,9 +50,9 @@ public class Loginstep {
     @Test
     public void testOwnerLoginSuccess() {
         String username = "owner";
-        String password = "9999";
+        
         myApplication.signUp(username);
-        boolean result = myApplication.login(username, password);
+        boolean result = myApplication.login(username);
         assertTrue("Owner login should succeed", result);
         assertTrue("Owner should be logged in", myApplication.isLoggedIn());
     }
@@ -60,9 +60,9 @@ public class Loginstep {
     @Test
     public void testSupplierLoginSuccess() {
         String username = "supplier";
-        String password = "9876";
+       
         myApplication.signUp(username);
-        boolean result = myApplication.login(username, password);
+        boolean result = myApplication.login(username);
         assertTrue("Supplier login should succeed", result);
         assertTrue("Supplier should be logged in", myApplication.isLoggedIn());
     }
@@ -70,8 +70,8 @@ public class Loginstep {
     @Test
     public void testInvalidLoginFails() {
         String username = "user";
-        String password = "wrongpassword";
-        boolean result = myApplication.login(username, password);
+       
+        boolean result = myApplication.login(username);
         assertFalse("Login should fail with wrong password", result);
         assertFalse("User should not be logged in", myApplication.isLoggedIn());
     }
