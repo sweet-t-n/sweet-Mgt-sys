@@ -1,11 +1,9 @@
 package sweet;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
-
 public class MyApplication {
     private static ArrayList<User> userList = new ArrayList<>();
     private static ArrayList<StoreOwner> storeOwnerList = new ArrayList<>();
@@ -14,13 +12,14 @@ public class MyApplication {
     private login login;
     private Set<String> registeredUsers = new HashSet<>();
     private String feedbackMessage;
+ 
    
     public MyApplication() {
         this.login = new login();
         this.registeredUsers = new HashSet<>();
         loadUserData();  
+      
     }
-
     public boolean login(String username, String password) {
         if (registeredUsers.contains(username)) {
             login.setCredentials(username, password); // Set credentials
@@ -29,34 +28,34 @@ public class MyApplication {
             return false;
         }
     }
-
-    public void logout() {
-        login.logout(); // Log out
+    public void logout(String username) {
+        if (registeredUsers.contains(username)) {
+            login.logout(); // Log out
+        }
     }
+    public boolean isLoggedIn(String username) {
+Remove this unused method parameter "username".
 
-    public boolean isLoggedIn() {
         return login.isLoggedIn();
     }
-
     public String getLoginFeedback() {
         return login.isLoggedIn() ? "Login successful" : "Login failed";
     }
+    
     
     public boolean signUp(String username, String password, String email, String country) {
         if (registeredUsers.contains(username)) {
             feedbackMessage = "Sign up failed: username already exists";
             return false;
         } else {
-            registeredUsers.add(username);  // Register the new user
+            registeredUsers.add(username);  // تسجيل المستخدم الجديد
             feedbackMessage = "Sign up successful, redirected to login page";
             return true;
         }
     }
-
     public String getSignUpFeedback() {
         return feedbackMessage;
     }
-
     public void removeUser(String username) {
         if (registeredUsers.contains(username)) {
             registeredUsers.remove(username);
@@ -65,8 +64,8 @@ public class MyApplication {
             System.out.println("User " + username + " not found.");
         }
     }
-    
-    public boolean simulateRedirectToLoginPage(boolean success) {
+   
+    public boolean simulateRedirectToLoginPage(String username, boolean success) {
         if (success) {
             feedbackMessage = "Sign up successful, redirected to login page";
             return true;
@@ -76,12 +75,12 @@ public class MyApplication {
   
     public boolean checkIfUserExists(String username) {
         boolean exists = false;
-        String filePath = "users.txt"; // Path to user file
+        String filePath = "users.txt"; // مسار ملف المستخدمين
         
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Assume each line contains just the username
+                // افترض أن كل سطر يحتوي على اسم المستخدم فقط
                 if (line.equals(username)) {
                     exists = true;
                     break;
@@ -93,14 +92,20 @@ public class MyApplication {
         
         return exists;
     }
-
+    
+     
+   
     public double applyDiscount(double price, int quantity) {
+        
         if (quantity > 10) {
             return price * 0.10; 
         }
         return 0.0; // No discount
     }
+    // Method to display products with discounts
+   
     
+  
     private void loadUserData() {
         try (Scanner scanner = new Scanner(new File("users.txt"))) {
             while (scanner.hasNextLine()) {
@@ -121,26 +126,20 @@ public class MyApplication {
                 }
             }
         } catch (FileNotFoundException e) {
-            // Handle the exception
-            System.err.println("User data file not found: " + e.getMessage());
+            
         }
     }
-
     public static void main(String[] args) {
         new MyApplication();
     }
-
-    public ArrayList<User> getUserList() {
-        return userList;
-    }
-
-    public void addUser(User user) {
-        if (!registeredUsers.contains(user.getUsername())) {
-            registeredUsers.add(user.getUsername());
-            userList.add(user);
-            System.out.println("User added successfully.");
-        } else {
-            System.out.println("User already exists.");
-        }
-    }
+	public ArrayList<User> getUser(String string) {
+		return null;
+		// TODO Auto-generated method stub
+		
+	}
+	public void addUser(User user) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }
