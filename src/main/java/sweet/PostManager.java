@@ -1,6 +1,7 @@
 package sweet;
 
 import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,8 +34,13 @@ public class PostManager {
         return posts.get(username + "_" + description);
     }
 
-	protected BufferedWriter createBufferedWriter(String fileName) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    protected BufferedWriter createBufferedWriter(String fileName) throws IOException {
+        // Ensure that fileName is not null or empty
+        if (fileName == null || fileName.trim().isEmpty()) {
+            throw new IllegalArgumentException("File name cannot be null or empty.");
+        }
+        
+        // Create and return a BufferedWriter for the given fileName
+        return new BufferedWriter(new FileWriter(fileName, true)); // true for appending data to the file
+    }
 }
