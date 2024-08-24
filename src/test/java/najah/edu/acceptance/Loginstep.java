@@ -34,7 +34,7 @@ public class Loginstep {
         myApplication.signUp(username, password, "user@example.com", "Country1");
         boolean result = myApplication.login(username, password);
         assertTrue("User login should succeed", result);
-        assertTrue("User should be logged in", myApplication.isLoggedIn(username));
+        assertTrue("User should be logged in", myApplication.isLoggedIn());
     }
 
     @Test
@@ -44,7 +44,7 @@ public class Loginstep {
         myApplication.signUp(username, password, "admin@example.com", "Country1");
         boolean result = myApplication.login(username, password);
         assertTrue("Admin login should succeed", result);
-        assertTrue("Admin should be logged in", myApplication.isLoggedIn(username));
+        assertTrue("Admin should be logged in", myApplication.isLoggedIn());
     }
 
     @Test
@@ -54,7 +54,7 @@ public class Loginstep {
         myApplication.signUp(username, password, "owner@example.com", "Country1");
         boolean result = myApplication.login(username, password);
         assertTrue("Owner login should succeed", result);
-        assertTrue("Owner should be logged in", myApplication.isLoggedIn(username));
+        assertTrue("Owner should be logged in", myApplication.isLoggedIn());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class Loginstep {
         myApplication.signUp(username, password, "supplier@example.com", "Country1");
         boolean result = myApplication.login(username, password);
         assertTrue("Supplier login should succeed", result);
-        assertTrue("Supplier should be logged in", myApplication.isLoggedIn(username));
+        assertTrue("Supplier should be logged in", myApplication.isLoggedIn());
     }
 
     @Test
@@ -73,7 +73,7 @@ public class Loginstep {
         String password = "wrongpassword";
         boolean result = myApplication.login(username, password);
         assertFalse("Login should fail with wrong password", result);
-        assertFalse("User should not be logged in", myApplication.isLoggedIn(username));
+        assertFalse("User should not be logged in", myApplication.isLoggedIn());
     }
     
         @Given("that the user {string} is not logged in")
