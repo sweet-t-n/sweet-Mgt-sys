@@ -5,16 +5,17 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import sweet.SignUp;
+
+import sweet.signUp;
 
 
 public class SignUpTest {
 
-    private SignUp signup;
+    private signUp signup;
 
     @Before
     public void setUp() {
-        signup = new SignUp();
+        signup = new signUp();
     }
 
     @Test
