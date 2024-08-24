@@ -5,54 +5,60 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class MyApplication {
+    private static final Logger logger = Logger.getLogger(MyApplication.class.getName());
+
     private static ArrayList<User> userList = new ArrayList<>();
     private static ArrayList<StoreOwner> storeOwnerList = new ArrayList<>();
     private static ArrayList<Admin> adminList = new ArrayList<>();
     private static ArrayList<MaterialSupplier> materialSupplierList = new ArrayList<>();
-    private login login;
     private Set<String> registeredUsers = new HashSet<>();
     private String feedbackMessage;
-   
+    private String loggedInUsername;
+    private boolean loggedIn = false;
+
     public MyApplication() {
-        this.login = new login();
         this.registeredUsers = new HashSet<>();
-        loadUserData();  
+        this.feedbackMessage = "No feedback";
+        loadUserData();
     }
 
     public boolean login(String username, String password) {
         if (registeredUsers.contains(username)) {
-            login.setCredentials(username, password); // تعيين بيانات الاعتماد
-            return login.login(username, password); // محاولة تسجيل الدخول
+            this.loggedInUsername = username;
+            this.loggedIn = true;
+            return true;
         } else {
+            this.loggedIn = false;
             return false;
         }
     }
 
     public void logout() {
-        login.logout(); 
+        this.loggedInUsername = null;
+        this.loggedIn = false;
     }
 
     public boolean isLoggedIn() {
-        return login.isLoggedIn();
+        return loggedIn;
     }
 
     public String getLoginFeedback() {
-        return login.isLoggedIn() ? "Login successful" : "Login failed";
+        return isLoggedIn() ? "Login successful" : "Login failed";
     }
-    
+
     public boolean signUp(String username) {
         if (registeredUsers.contains(username)) {
             feedbackMessage = "Sign up failed: username already exists";
             return false;
         } else {
-            registeredUsers.add(username);  
+            registeredUsers.add(username);
             feedbackMessage = "Sign up successful, redirected to login page";
             return true;
         }
     }
-
 
     public String getSignUpFeedback() {
         return feedbackMessage;
@@ -61,12 +67,12 @@ public class MyApplication {
     public void removeUser(String username) {
         if (registeredUsers.contains(username)) {
             registeredUsers.remove(username);
-            System.out.println("User " + username + " removed successfully.");
+            logger.info("User " + username + " removed successfully.");
         } else {
-            System.out.println("User " + username + " not found.");
+            logger.warning("User " + username + " not found.");
         }
     }
-    
+
     public boolean simulateRedirectToLoginPage(boolean success) {
         if (success) {
             feedbackMessage = "Sign up successful, redirected to login page";
@@ -74,38 +80,30 @@ public class MyApplication {
         }
         return false;
     }
-  
+
     public boolean checkIfUserExists(String username) {
-        boolean exists = false;
-        String filePath = "users.txt"; // مسار ملف المستخدمين
-        
+        String filePath = "users.txt";
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // افترض أن كل سطر يحتوي على اسم المستخدم فقط
-                if (line.equals(username)) {
-                    exists = true;
-                    break;
-                }
-            }
+            return reader.lines().anyMatch(line -> line.equals(username));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.severe("Error checking if user exists: " + e.getMessage());
+            return false;
         }
-        
-        return exists;
     }
 
     public double applyDiscount(double price, int quantity) {
         if (quantity > 10) {
-            return price * 0.10; 
+            return price * 0.10;
         }
-        return 0.0; // لا يوجد خصم
+        return 0.0;
     }
-    
+
     private void loadUserData() {
         try (Scanner scanner = new Scanner(new File("users.txt"))) {
             while (scanner.hasNextLine()) {
                 String[] data = scanner.nextLine().split("\\|");
+                if (data.length < 5) continue; // Skip invalid lines
+
                 switch (data[0]) {
                     case "User":
                         userList.add(new User(data[1], data[2], data[3], data[4]));
@@ -119,10 +117,13 @@ public class MyApplication {
                     case "MaterialSupplier":
                         materialSupplierList.add(new MaterialSupplier(data[1], data[2], data[3], data[4]));
                         break;
+                    default:
+                        logger.warning("Unknown user type: " + data[0]);
+                        break;
                 }
             }
         } catch (FileNotFoundException e) {
-            
+            logger.severe("Error loading user data: " + e.getMessage());
         }
     }
 
