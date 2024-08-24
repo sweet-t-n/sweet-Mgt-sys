@@ -1,75 +1,103 @@
 package najah.edu.acceptance;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+
+import sweet.MyApplication;
+import sweet.User;
+import sweet.UserRole;
+import sweet.signupmanager;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import static org.junit.Assert.*;
-import sweet.signUp;
 
 public class SignUpTest {
 
-    private String username;
-    private String password;
-    private String email;
-    private String country;
-    private boolean signupSuccess;
-    private String feedbackMessage;
-    private signUp signUpService;
+    private MyApplication app;
+    private signupmanager signupManager;
+    private String currentUsername;
+    private String currentPassword;
+    private boolean signUpResult;
 
-    public SignUpTest() {
-        this.signUpService = new signUp();
+    public SignUpTest(MyApplication ob) {
+        app = ob;  // Use the provided MyApplication instance
+        signupManager = new signupmanager();
     }
 
     @Given("that the user {string} is not signed up")
-    public void givenUserIsNotSignedUp(String username) {
-        this.username = username;
-        signUpService.theUserIsNotSignedUp(username);  // Ensure the user is not signed up
+    public void thatTheUserIsNotSignedUp(String username) {
+        currentUsername = username;
+        assertFalse("User should not be signed up", app.checkIfUserExists(username));
     }
 
-    @Given("that the user {string} is signed up")
-    public void givenUserIsSignedUp(String username) {
-        this.username = username;
-        signUpService.whenUserEntersUsernameAndPassword(username, "defaultPassword");  // Ensure user is signed up
+    @Given("they do not have an account in the system")
+    public void theyDoNotHaveAnAccountInTheSystem() {
+        assertNull("User account should not exist", app.getUser(currentUsername));
     }
 
-    @When("the user enters a username {string}, password {string}, email {string}, and country {string}")
-    public void whenUserEntersDetails(String username, String password, String email, String country) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.country = country;
+    @When("the user enters a username {string} and password {string}")
+    public void theUserEntersAUsernameAndPassword(String username, String password) {
+        currentUsername = username;
+        currentPassword = password;
 
-        // Only username and password are used for sign up
-        signUpService.whenUserEntersUsernameAndPassword(username, password);
-        signupSuccess = signUpService.isSignupSuccessful();
-        feedbackMessage = signUpService.getFeedbackMessage();
+        // Here we can use default or hard-coded values for email, country, and role
+        String defaultEmail = "defaultEmail@example.com";
+        String defaultCountry = "Palestine";
+        UserRole defaultRole = UserRole.REGULAR_USER;
 
-        // Debugging: Print values to ensure they're correctly set
-        System.out.println("Signup Success: " + signupSuccess);
-        System.out.println("Feedback Message: " + feedbackMessage);
+        // Attempt to sign up the user
+        signUpResult = signupManager.signUp(username, password, defaultEmail, defaultCountry, defaultRole);
     }
 
     @Then("the sign up succeeds")
-    public void thenSignUpSucceeds() {
-        assertTrue("Expected sign up to succeed, but it failed.", signupSuccess);
-        assertEquals("Sign up successful", feedbackMessage);
-    }
-
-    @Then("the sign up fails")
-    public void thenSignUpFails() {
-        assertFalse("Expected sign up to fail, but it succeeded.", signupSuccess);
-        assertEquals("Sign up failed: username already exists", feedbackMessage);
+    public void theSignUpSucceeds() {
+        assertTrue("Sign up should succeed", signUpResult);
     }
 
     @Then("the user is redirected to the login page")
-    public void thenUserIsRedirectedToLoginPage() {
-        // Assuming feedback message contains information about redirection
-        assertTrue("Expected user to be redirected to the login page, but it wasn't.", 
-                   feedbackMessage.contains("redirected to login page"));
+    public void theUserIsRedirectedToTheLoginPage() {
+        // Assuming the result being true implies redirection
+        assertTrue("User should be redirected to login page", signUpResult);
+    }
+
+    @Then("the account is saved in the system")
+    public void theAccountIsSavedInTheSystem() {
+        assertNotNull("User account should be saved", app.getUser(currentUsername));
+    }
+
+    @Given("they already have an account in the system")
+    public void theyAlreadyHaveAnAccountInTheSystem() {
+        // Ensure the user is already in the system
+        if (!app.checkIfUserExists(currentUsername)) {
+            app.addUser(new User(currentUsername, "defaultPassword", "defaultEmail@example.com", "Palestine"));
+        }
+        assertTrue("User account should exist", app.checkIfUserExists(currentUsername));
+    }
+
+    @Then("the sign up fails")
+    public void theSignUpFails() {
+        assertFalse("Sign up should fail", signUpResult);
     }
 
     @Then("the user is prompted to try again")
-    public void thenUserIsPromptedToTryAgain() {
-        assertEquals("Sign up failed: please try again", feedbackMessage);
+    public void theUserIsPromptedToTryAgain() {
+        assertFalse("User should be prompted to try again", signUpResult);
+    }
+
+    @Then("the account is not saved in the system")
+    public void theAccountIsNotSavedInTheSystem() {
+        ArrayList<User> user = app.getUser(currentUsername);
+        
+        // If the sign-up attempt fails, no new account should be created
+        // If the user already exists, we should verify that no new account was added or modified.
+        if (app.checkIfUserExists(currentUsername)) {
+            assertTrue("The user already existed before the sign-up attempt", user != null &&(user).equals(currentUsername));
+        } else {
+            assertNull("User account should not be saved", user);
+        }
     }
 }

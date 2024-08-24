@@ -36,7 +36,6 @@ public class MyApplication {
     private static ArrayList<Admin> adminList = new ArrayList<>();
     private static ArrayList<MaterialSupplier> materialSupplierList = new ArrayList<>();
     private login login;
-    private CommunicationandNotification communication;
     private signUp signUp;
     private Set<String> registeredUsers = new HashSet<>();
     private String feedbackMessage;
@@ -52,7 +51,6 @@ public class MyApplication {
 
     public MyApplication() {
         this.login = new login();
-        this.communication = new CommunicationandNotification(null);
         this.signUp = new signUp();
         this.registeredUsers = new HashSet<>();
         loadUserData();  
@@ -3435,6 +3433,20 @@ public class MyApplication {
     public static void main(String[] args) {
         new MyApplication();
     }
+
+
+
+	public void addUser(User user) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	public ArrayList<User> getUser(String currentUsername) {
+		// TODO Auto-generated method stub
+		return userList;
+	}
 
 
 
