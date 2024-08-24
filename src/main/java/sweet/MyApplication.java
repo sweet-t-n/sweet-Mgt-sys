@@ -1,10 +1,15 @@
 package sweet;
+
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
+
+
 public class MyApplication {
+
     private static ArrayList<User> userList = new ArrayList<>();
     private static ArrayList<StoreOwner> storeOwnerList = new ArrayList<>();
     private static ArrayList<Admin> adminList = new ArrayList<>();
@@ -14,12 +19,17 @@ public class MyApplication {
     private String feedbackMessage;
  
    
+
+
     public MyApplication() {
         this.login = new login();
         this.registeredUsers = new HashSet<>();
         loadUserData();  
       
     }
+
+
+
     public boolean login(String username, String password) {
         if (registeredUsers.contains(username)) {
             login.setCredentials(username, password); // Set credentials
@@ -28,16 +38,17 @@ public class MyApplication {
             return false;
         }
     }
+
     public void logout(String username) {
         if (registeredUsers.contains(username)) {
             login.logout(); // Log out
         }
     }
-    public boolean isLoggedIn(String username) {
-Remove this unused method parameter "username".
 
+    public boolean isLoggedIn(String username) {
         return login.isLoggedIn();
     }
+
     public String getLoginFeedback() {
         return login.isLoggedIn() ? "Login successful" : "Login failed";
     }
@@ -53,9 +64,11 @@ Remove this unused method parameter "username".
             return true;
         }
     }
+
     public String getSignUpFeedback() {
         return feedbackMessage;
     }
+
     public void removeUser(String username) {
         if (registeredUsers.contains(username)) {
             registeredUsers.remove(username);
@@ -64,6 +77,7 @@ Remove this unused method parameter "username".
             System.out.println("User " + username + " not found.");
         }
     }
+
    
     public boolean simulateRedirectToLoginPage(String username, boolean success) {
         if (success) {
@@ -93,6 +107,7 @@ Remove this unused method parameter "username".
         return exists;
     }
     
+
      
    
     public double applyDiscount(double price, int quantity) {
@@ -102,10 +117,13 @@ Remove this unused method parameter "username".
         }
         return 0.0; // No discount
     }
+
     // Method to display products with discounts
    
     
   
+
+
     private void loadUserData() {
         try (Scanner scanner = new Scanner(new File("users.txt"))) {
             while (scanner.hasNextLine()) {
@@ -129,17 +147,30 @@ Remove this unused method parameter "username".
             
         }
     }
+
     public static void main(String[] args) {
         new MyApplication();
     }
+
+
+
 	public ArrayList<User> getUser(String string) {
 		return null;
 		// TODO Auto-generated method stub
 		
 	}
+
+
+
 	public void addUser(User user) {
 		// TODO Auto-generated method stub
 		
 	}
+
+
+
 	
+
+
+
 }
