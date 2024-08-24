@@ -65,14 +65,17 @@ public class MyApplication {
         return feedbackMessage;
     }
 
-    public void removeUser(String username) {
-        if (registeredUsers.contains(username)) {
-            registeredUsers.remove(username);
-            logger.info(String.format("User %s removed successfully.", username));
-        } else {
-            logger.warning(String.format("User %s not found.", username));
-        }
+   public void removeUser(String username) {
+    if (registeredUsers.contains(username)) {
+        registeredUsers.remove(username);
+
+        logger.info(String.format("User %s removed successfully.", username));
+    } else {
+        
+        logger.warning(String.format("User %s not found.", username));
     }
+}
+
 
 
     public boolean simulateRedirectToLoginPage(boolean success) {
