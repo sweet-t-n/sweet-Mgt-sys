@@ -17,7 +17,6 @@ public class OrderTrackingTest {
 
    
 public void setUp() {
-    System.setProperty("java.awt.headless", "true");
     app = new MyApplication();
 
         // Create the JTable with some columns and rows for testing
