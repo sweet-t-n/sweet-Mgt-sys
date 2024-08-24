@@ -1,5 +1,7 @@
 package sweet;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,4 +32,9 @@ public class PostManager {
     public Post getPost(String username, String description) {
         return posts.get(username + "_" + description);
     }
+
+	protected BufferedWriter createBufferedWriter(String fileName) throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

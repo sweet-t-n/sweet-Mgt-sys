@@ -36,7 +36,6 @@ public class MyApplication {
     private static ArrayList<Admin> adminList = new ArrayList<>();
     private static ArrayList<MaterialSupplier> materialSupplierList = new ArrayList<>();
     private login login;
-    private signUp signUp;
     private Set<String> registeredUsers = new HashSet<>();
     private String feedbackMessage;
     private JFrame frame;
@@ -51,7 +50,6 @@ public class MyApplication {
 
     public MyApplication() {
         this.login = new login();
-        this.signUp = new signUp();
         this.registeredUsers = new HashSet<>();
         loadUserData();  
         frame = new JFrame("Sweet Management System");

@@ -2,16 +2,29 @@ package sweet;
 
 import static org.junit.Assert.*;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PostManagerTest {
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
+public class PostManagerTest {
     private PostManager postManager;
 
     @Before
     public void setUp() {
         postManager = new PostManager();
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        // تنظيف الملفات بعد الاختبار
+        Files.deleteIfExists(Paths.get("user_posts.txt"));
+        Files.deleteIfExists(Paths.get("content.txt"));
     }
 
     @Test
@@ -20,7 +33,7 @@ public class PostManagerTest {
         boolean result = postManager.createPost("user1", "Post Description", "imagePath");
         assertTrue(result);
         assertEquals("Post created successfully", postManager.getFeedbackMessage());
-        
+
         // تحقق من أن المنشور تم إنشاؤه بنجاح
         Post post = postManager.getPost("user1", "Post Description");
         assertNotNull(post);
@@ -78,4 +91,31 @@ public class PostManagerTest {
         Post post = postManager.getPost("user1", "Non-existent Post");
         assertNull(post);
     }
+
+    @Test
+    public void testSavePostSuccessfully() throws IOException {
+        String username = "user1";
+        String imagePath = "image/path/to/file.jpg";
+        String description = "This is a test description";
+
+        postManager.createPost(username, imagePath, description);
+
+        // تحقق من أن البيانات قد تم حفظها بشكل صحيح في ملف المستخدم
+        try (BufferedReader reader = new BufferedReader(new FileReader(username + "_posts.txt"))) {
+            String line = reader.readLine();
+            assertNotNull(line);
+            assertEquals(imagePath + "|" + description, line);
+        }
+
+        // تحقق من أن البيانات قد تم حفظها بشكل صحيح في ملف المحتوى
+        try (BufferedReader reader = new BufferedReader(new FileReader("content.txt"))) {
+            String line = reader.readLine();
+            assertNotNull(line);
+            
+            
+            assertEquals(username + "|" + imagePath + "|" + description, line);
+        }
+    }
+
+
 }
