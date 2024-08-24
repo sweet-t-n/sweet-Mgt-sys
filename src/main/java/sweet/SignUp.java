@@ -3,20 +3,18 @@ package sweet;
 import java.util.HashSet;
 import java.util.Set;
 
-public class signUp {
-
+public class SignUp {
     private Set<String> registeredUsers;
     private String username;
     private boolean signupSuccess = false;
     private String feedbackMessage = "";
 
-    public signUp() {
+    public SignUp() {
         this.registeredUsers = new HashSet<>(); // To store registered usernames
     }
 
     public boolean theUserIsNotSignedUp(String username) {
         this.setUsername(username);
-
         if (registeredUsers.contains(username)) {
             feedbackMessage = "Sign up failed: username already exists";
             return false;
@@ -27,10 +25,9 @@ public class signUp {
         }
     }
 
-    public void whenUserEntersUsernameAndPassword(String username, String password) {
+    public void whenUserEntersUsernameAndPassword(String username) {
         this.setUsername(username);
         feedbackMessage = "No feedback";
-
         if (registeredUsers.contains(username)) {
             signupSuccess = false;
             feedbackMessage = "Sign up failed: username already exists";
@@ -44,7 +41,6 @@ public class signUp {
     public boolean isSignupSuccessful() {
         return signupSuccess;
     }
-
 
     public String getFeedbackMessage() {
         return feedbackMessage;
