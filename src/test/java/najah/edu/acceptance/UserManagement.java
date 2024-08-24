@@ -3,13 +3,11 @@ package najah.edu.acceptance;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
 
-import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import sweet.MyApplication;
+
 
 public class UserManagement {
 	
