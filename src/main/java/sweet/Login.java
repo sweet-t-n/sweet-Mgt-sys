@@ -2,7 +2,7 @@ package sweet;
 
 
 
-public class login {
+public class Login {
     private String username;
     private String password;
     private boolean loggedIn;
