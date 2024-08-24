@@ -5,6 +5,7 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
   build:
     name: Build and analyze
@@ -40,3 +41,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=sweet-t-n_sweet-Mgt-sys
+
+      - name: Upload Surefire Reports
+        if: always()  # This ensures that the reports are uploaded even if tests fail
+        uses: actions/upload-artifact@v3
+        with:
+          name: surefire-reports
+          path: |
+            target/surefire-reports/
