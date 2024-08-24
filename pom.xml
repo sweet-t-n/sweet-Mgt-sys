@@ -78,5 +78,12 @@
             <artifactId>surefire-api</artifactId>
             <version>3.3.1</version>
         </dependency>
+        <dependency>
+    <groupId>org.mockito</groupId>
+    <artifactId>mockito-core</artifactId>
+    <version>4.8.0</version> <!-- تأكد من استخدام أحدث إصدار -->
+    <scope>test</scope>
+</dependency>
+
     </dependencies>
 </project>

@@ -1,5 +1,0 @@
-Store1|sweet1|1|370.0
-Store1|sweet3|1|89.0
-Store1|sweet2|1|2000.0
-Store1|sweet5|1|450.0
-Total Sales: $2909.0

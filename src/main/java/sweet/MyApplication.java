@@ -3436,16 +3436,17 @@ public class MyApplication {
 
 
 
-	public void addUser(User user) {
+	public ArrayList<User> getUser(String string) {
+		return null;
 		// TODO Auto-generated method stub
 		
 	}
 
 
 
-	public ArrayList<User> getUser(String currentUsername) {
+	public void addUser(User user) {
 		// TODO Auto-generated method stub
-		return userList;
+		
 	}
 
 

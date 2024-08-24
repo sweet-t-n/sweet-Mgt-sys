@@ -39,7 +39,12 @@ public class SignUpTest {
         assertNull("User account should not exist", app.getUser(currentUsername));
     }
 
-    @When("the user enters a username {string} and password {string}")
+    private void assertNull(String message, Object user) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@When("the user enters a username {string} and password {string}")
     public void theUserEntersAUsernameAndPassword(String username, String password) {
         currentUsername = username;
         currentPassword = password;
@@ -69,7 +74,12 @@ public class SignUpTest {
         assertNotNull("User account should be saved", app.getUser(currentUsername));
     }
 
-    @Given("they already have an account in the system")
+    private void assertNotNull(String message, Object user) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Given("they already have an account in the system")
     public void theyAlreadyHaveAnAccountInTheSystem() {
         // Ensure the user is already in the system
         if (!app.checkIfUserExists(currentUsername)) {
