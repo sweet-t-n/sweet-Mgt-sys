@@ -1,14 +1,19 @@
 package sweet;
 
-
-
 public class Login {
     private String username;
     private String password;
     private boolean loggedIn;
 
-    // Constructor
-    public login() {
+    // Default Constructor
+    public Login() {
+        this.loggedIn = false; // Initially, no user is logged in
+    }
+
+    // Constructor with initial credentials
+    public Login(String username, String password) {
+        this.username = username;
+        this.password = password;
         this.loggedIn = false; // Initially, no user is logged in
     }
 
