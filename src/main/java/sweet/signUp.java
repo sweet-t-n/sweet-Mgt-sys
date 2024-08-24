@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class signUp {
+
     private Set<String> registeredUsers;
     private String username;
     private boolean signupSuccess = false;
@@ -15,6 +16,7 @@ public class signUp {
 
     public boolean theUserIsNotSignedUp(String username) {
         this.setUsername(username);
+
         if (registeredUsers.contains(username)) {
             feedbackMessage = "Sign up failed: username already exists";
             return false;
@@ -25,9 +27,8 @@ public class signUp {
         }
     }
 
-    public void whenUserEntersUsernameAndPassword(String username) {
+    public void whenUserEntersUsernameAndPassword(String username, String password) {
         this.setUsername(username);
-        feedbackMessage = "No feedback";
         if (registeredUsers.contains(username)) {
             signupSuccess = false;
             feedbackMessage = "Sign up failed: username already exists";
@@ -35,6 +36,11 @@ public class signUp {
             registeredUsers.add(username);  // Register the new user
             signupSuccess = true;
             feedbackMessage = "Sign up successful";
+        }
+
+        // Ensure feedbackMessage is not null
+        if (feedbackMessage == null) {
+            feedbackMessage = "No feedback";
         }
     }
 
