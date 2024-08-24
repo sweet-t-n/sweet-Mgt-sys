@@ -3,13 +3,13 @@ package sweet;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SignUp {
+public class signUp {
     private Set<String> registeredUsers;
     private String username;
     private boolean signupSuccess = false;
     private String feedbackMessage = "";
 
-    public SignUp() {
+    public signUp() {
         this.registeredUsers = new HashSet<>(); // To store registered usernames
     }
 
@@ -59,3 +59,4 @@ public class SignUp {
         this.username = username;
     }
 }
+
