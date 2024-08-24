@@ -31,7 +31,7 @@ public class MyApplication {
     }
 
     public void logout() {
-        login.logout(); // تسجيل الخروج
+        login.logout(); 
     }
 
     public boolean isLoggedIn() {
@@ -42,16 +42,17 @@ public class MyApplication {
         return login.isLoggedIn() ? "Login successful" : "Login failed";
     }
     
-    public boolean signUp(String username, String password, String email, String country) {
+    public boolean signUp(String username) {
         if (registeredUsers.contains(username)) {
             feedbackMessage = "Sign up failed: username already exists";
             return false;
         } else {
-            registeredUsers.add(username);  // تسجيل المستخدم الجديد
+            registeredUsers.add(username);  
             feedbackMessage = "Sign up successful, redirected to login page";
             return true;
         }
     }
+
 
     public String getSignUpFeedback() {
         return feedbackMessage;
