@@ -34,6 +34,7 @@ public class MyApplication {
             return false;
         }
     }
+    
 
 
     public void logout() {
@@ -67,11 +68,12 @@ public class MyApplication {
     public void removeUser(String username) {
         if (registeredUsers.contains(username)) {
             registeredUsers.remove(username);
-            logger.info("User " + username + " removed successfully.");
+            logger.info(String.format("User %s removed successfully.", username));
         } else {
-            logger.warning("User " + username + " not found.");
+            logger.warning(String.format("User %s not found.", username));
         }
     }
+
 
     public boolean simulateRedirectToLoginPage(boolean success) {
         if (success) {
