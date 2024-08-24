@@ -2,13 +2,13 @@ package sweet;
 
 
 
-public class Login {
+public class login {
     private String username;
     private String password;
     private boolean loggedIn;
 
     // Constructor
-    public Login() {
+    public login() {
         this.loggedIn = false; // Initially, no user is logged in
     }
 
@@ -23,14 +23,14 @@ public class Login {
         return inputUsername.equals(this.username) && inputPassword.equals(this.password);
     }
 
-    // Attempt to log in with the provided username and password
-    public boolean login(String inputUsername, String inputPassword) {
+    
+    public login(String inputUsername, String inputPassword) {
         if (validateCredentials(inputUsername, inputPassword)) {
             this.loggedIn = true;
-            return true;
+           
         } else {
             this.loggedIn = false;
-            return false;
+           
         }
     }
 
