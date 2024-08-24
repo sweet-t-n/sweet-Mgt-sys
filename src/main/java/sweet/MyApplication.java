@@ -16,7 +16,7 @@ public class MyApplication {
     private static ArrayList<MaterialSupplier> materialSupplierList = new ArrayList<>();
     private Set<String> registeredUsers = new HashSet<>();
     private String feedbackMessage;
-    private String loggedInUsername;
+    
     private boolean loggedIn = false;
 
     public MyApplication() {
@@ -25,9 +25,8 @@ public class MyApplication {
         loadUserData();
     }
 
-    public boolean login(String username, String password) {
+    public boolean login(String username) {
         if (registeredUsers.contains(username)) {
-            this.loggedInUsername = username;
             this.loggedIn = true;
             return true;
         } else {
@@ -36,8 +35,9 @@ public class MyApplication {
         }
     }
 
+
     public void logout() {
-        this.loggedInUsername = null;
+        
         this.loggedIn = false;
     }
 
