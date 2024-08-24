@@ -141,6 +141,6 @@ public class MyApplication {
    
 
     public void addUser(User user) {
-        
+        throw new UnsupportedOperationException("addUser method is not implemented yet.");
     }
 }
