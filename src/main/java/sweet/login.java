@@ -23,14 +23,14 @@ public class login {
         return inputUsername.equals(this.username) && inputPassword.equals(this.password);
     }
 
-    
-    public login(String inputUsername, String inputPassword) {
+    // Attempt to log in with the provided username and password
+    public boolean login(String inputUsername, String inputPassword) {
         if (validateCredentials(inputUsername, inputPassword)) {
             this.loggedIn = true;
-           
+            return true;
         } else {
             this.loggedIn = false;
-           
+            return false;
         }
     }
 
