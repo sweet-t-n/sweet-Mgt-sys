@@ -29,6 +29,8 @@ public class signUp {
 
     public void whenUserEntersUsernameAndPassword(String username, String password) {
         this.setUsername(username);
+        feedbackMessage = "No feedback";
+
         if (registeredUsers.contains(username)) {
             signupSuccess = false;
             feedbackMessage = "Sign up failed: username already exists";
@@ -37,16 +39,12 @@ public class signUp {
             signupSuccess = true;
             feedbackMessage = "Sign up successful";
         }
-
-        // Ensure feedbackMessage is not null
-        if (feedbackMessage == null) {
-            feedbackMessage = "No feedback";
-        }
     }
 
     public boolean isSignupSuccessful() {
         return signupSuccess;
     }
+
 
     public String getFeedbackMessage() {
         return feedbackMessage;
