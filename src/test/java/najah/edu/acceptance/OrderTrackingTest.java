@@ -15,9 +15,10 @@ public class OrderTrackingTest {
     private MyApplication app;
     private JTable orderTable;
 
-    @Before
-    public void setUp() {
-        app = new MyApplication();
+   
+public void setUp() {
+    System.setProperty("java.awt.headless", "true");
+    app = new MyApplication();
 
         // Create the JTable with some columns and rows for testing
         String[] columnNames = {"Product Name", "Quantity", "Price", "Status"};
