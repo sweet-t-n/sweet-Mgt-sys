@@ -1319,7 +1319,7 @@ public class MyApplication {
 
      
     ///////////////////////////////////////////
-    private double applyDiscount(double price, int quantity) {
+    public double applyDiscount(double price, int quantity) {
         
         if (quantity > 10) {
             return price * 0.10; 
