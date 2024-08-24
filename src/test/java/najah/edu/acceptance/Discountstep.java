@@ -3,14 +3,12 @@ package najah.edu.acceptance;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
-
 import sweet.MyApplication;
 
-public class Discountstep {
+public class DiscountTest {
 
     private MyApplication app;
 
-    // This method will be run before each test to initialize the application object
     @Before
     public void setUp() {
         app = new MyApplication();
