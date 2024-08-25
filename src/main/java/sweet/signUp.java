@@ -27,7 +27,7 @@ public class signUp {
         }
     }
 
-   public void whenUserEntersUsernameAndPassword(String username, String password) {
+   public void whenUserEntersUsernameAndPassword(String username) {
     this.setUsername(username);
     feedbackMessage = "No feedback";
 
