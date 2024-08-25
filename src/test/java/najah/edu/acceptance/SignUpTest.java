@@ -1,9 +1,12 @@
-package sweet;
+
+package najah.edu.acceptance;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import sweet.signUp;
 
 public class SignUpTest {
 
