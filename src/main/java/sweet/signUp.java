@@ -27,22 +27,23 @@ public class signUp {
         }
     }
 
-    public void whenUserEntersUsernameAndPassword(String username) {
-        this.setUsername(username);
-        if (registeredUsers.contains(username)) {
-            signupSuccess = false;
-            feedbackMessage = "Sign up failed: username already exists";
-        } else {
-            registeredUsers.add(username);  // Register the new user
-            signupSuccess = true;
-            feedbackMessage = "Sign up successful";
-        }
-
-       
-        if (feedbackMessage == null) {
-            feedbackMessage = "No feedback";
-        }
+   public void whenUserEntersUsernameAndPassword(String username) {
+    this.setUsername(username);
+    if (registeredUsers.contains(username)) {
+        signupSuccess = false;
+        feedbackMessage = "Sign up failed: username already exists";
+    } else {
+        registeredUsers.add(username);  // Register the new user
+        signupSuccess = true;
+        feedbackMessage = "Sign up successful";
     }
+    
+   
+    if (feedbackMessage == null || feedbackMessage.isEmpty()) {
+        feedbackMessage = "No feedback";
+    }
+}
+
 
     public boolean isSignupSuccessful() {
         return signupSuccess;
