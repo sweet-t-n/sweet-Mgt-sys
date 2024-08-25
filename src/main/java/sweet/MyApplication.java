@@ -65,19 +65,19 @@ public class MyApplication {
         return feedbackMessage;
     }
 
-   public void removeUser(String username) {
+  public void removeUser(String username) {
     if (registeredUsers.contains(username)) {
         registeredUsers.remove(username);
         
-        
-        if (username.matches("[^0-9]*")) {
+       
+        if (username.matches("\\D*")) {
             logger.info(String.format("User %s removed successfully.", username));
         }
-
     } else {
         logger.warning(String.format("User %s not found.", username));
     }
 }
+
 
 
 
