@@ -5,15 +5,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 public class MyApplication {
-    private static final Logger logger = Logger.getLogger(MyApplication.class.getName());
+    //private static final Logger logger = Logger.getLogger(MyApplication.class.getName());
 
     private static ArrayList<User> userList = new ArrayList<>();
-    private static ArrayList<StoreOwner> storeOwnerList = new ArrayList<>();
-    private static ArrayList<Admin> adminList = new ArrayList<>();
-    private static ArrayList<MaterialSupplier> materialSupplierList = new ArrayList<>();
+    //private static ArrayList<StoreOwner> storeOwnerList = new ArrayList<>();
+   // private static ArrayList<Admin> adminList = new ArrayList<>();
+   // private static ArrayList<MaterialSupplier> materialSupplierList = new ArrayList<>();
     private Set<String> registeredUsers = new HashSet<>();
     private boolean loggedIn = false;
 
@@ -34,18 +34,13 @@ public class MyApplication {
     
 
 
-    public void logout() {
-        
-        this.loggedIn = false;
-    }
+    
 
     public boolean isLoggedIn() {
         return loggedIn;
     }
 
-    public String getLoginFeedback() {
-        return isLoggedIn() ? "Login successful" : "Login failed";
-    }
+   
 
     public boolean signUp(String username) {
         if (registeredUsers.contains(username)) {
@@ -81,30 +76,28 @@ public class MyApplication {
                     userList.add(new User(data[1], data[2], data[3], data[4]));
                     break;
                 case "StoreOwner":
-                    storeOwnerList.add(new StoreOwner(data[1], data[2], data[3], data[4]));
+                   // storeOwnerList.add(new StoreOwner(data[1], data[2], data[3], data[4]));
                     break;
                 case "Admin":
-                    adminList.add(new Admin(data[1], data[2], data[3], data[4]));
+                   // adminList.add(new Admin(data[1], data[2], data[3], data[4]));
                     break;
                 case "MaterialSupplier":
-                    materialSupplierList.add(new MaterialSupplier(data[1], data[2], data[3], data[4]));
+                 //   materialSupplierList.add(new MaterialSupplier(data[1], data[2], data[3], data[4]));
                     break;
                 default:
-                    logger.warning(String.format("Unknown user type: %s", data[0]));
+                   // logger.warning(String.format("Unknown user type: %s", data[0]));
                     break;
             }
         }
     } catch (FileNotFoundException e) {
-        logger.severe(String.format("Error loading user data: %s", e.getMessage()));
+      //  logger.severe(String.format("Error loading user data: %s", e.getMessage()));
     }
+}
 }
 
 
-    public static void main(String[] args) {
-     
-    }
+    
 
    
 
    
-}
