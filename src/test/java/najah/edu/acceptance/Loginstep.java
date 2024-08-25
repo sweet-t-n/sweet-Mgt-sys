@@ -117,6 +117,8 @@ public class Loginstep {
 
         @When("supplier tries to login")
         public void supplierTriesToLogin() {
+            // This method is intentionally left empty because the actual login process 
+            // is handled by the `passwordIs` method, which checks the password and sets loginSuccess accordingly.
             
         }
 
