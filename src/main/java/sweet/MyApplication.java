@@ -15,13 +15,10 @@ public class MyApplication {
     private static ArrayList<Admin> adminList = new ArrayList<>();
     private static ArrayList<MaterialSupplier> materialSupplierList = new ArrayList<>();
     private Set<String> registeredUsers = new HashSet<>();
-    private String feedbackMessage;
-    
     private boolean loggedIn = false;
 
     public MyApplication() {
         this.registeredUsers = new HashSet<>();
-        this.feedbackMessage = "No feedback";
         loadUserData();
     }
 
@@ -52,55 +49,20 @@ public class MyApplication {
 
     public boolean signUp(String username) {
         if (registeredUsers.contains(username)) {
-            feedbackMessage = "Sign up failed: username already exists";
             return false;
         } else {
             registeredUsers.add(username);
-            feedbackMessage = "Sign up successful, redirected to login page";
             return true;
         }
     }
 
-    public String getSignUpFeedback() {
-        return feedbackMessage;
-    }
-
-  public void removeUser(String username) {
-    if (registeredUsers.contains(username)) {
-        registeredUsers.remove(username);
-        
-       
-        if (username.matches("\\D*")) {
-            logger.info(String.format("User %s removed successfully.", username));
-        }
-    } else {
-        logger.warning(String.format("User %s not found.", username));
-    }
-}
+   
 
 
 
+   
 
-
-
-
-    public boolean simulateRedirectToLoginPage(boolean success) {
-        if (success) {
-            feedbackMessage = "Sign up successful, redirected to login page";
-            return true;
-        }
-        return false;
-    }
-
-    public boolean checkIfUserExists(String username) {
-        String filePath = "users.txt";
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            return reader.lines().anyMatch(line -> line.equals(username));
-        } catch (IOException e) {
-            logger.severe("Error checking if user exists: " + e.getMessage());
-            return false;
-        }
-    }
+   
 
     public double applyDiscount(double price, int quantity) {
         if (quantity > 10) {
@@ -113,7 +75,7 @@ public class MyApplication {
     try (Scanner scanner = new Scanner(new File("users.txt"))) {
         while (scanner.hasNextLine()) {
             String[] data = scanner.nextLine().split("\\|");
-            if (data.length < 5) continue; // Skip invalid lines
+            if (data.length < 5) continue; 
             switch (data[0]) {
                 case "User":
                     userList.add(new User(data[1], data[2], data[3], data[4]));
@@ -139,12 +101,10 @@ public class MyApplication {
 
 
     public static void main(String[] args) {
-        new MyApplication();
+     
     }
 
    
 
-    public void addUser(User user) {
-        throw new UnsupportedOperationException("addUser method is not implemented yet.");
-    }
+   
 }
