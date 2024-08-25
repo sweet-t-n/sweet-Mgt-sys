@@ -27,8 +27,10 @@ public class signUp {
         }
     }
 
-   public void whenUserEntersUsernameAndPassword(String username) {
+   public void whenUserEntersUsernameAndPassword(String username, String password) {
     this.setUsername(username);
+    feedbackMessage = "No feedback";
+
     if (registeredUsers.contains(username)) {
         signupSuccess = false;
         feedbackMessage = "Sign up failed: username already exists";
@@ -37,17 +39,15 @@ public class signUp {
         signupSuccess = true;
         feedbackMessage = "Sign up successful";
     }
-    
-   
-    if (feedbackMessage == null || feedbackMessage.isEmpty()) {
-        feedbackMessage = "No feedback";
-    }
+}
+
+public boolean isSignupSuccessful() {
+    return signupSuccess;
 }
 
 
-    public boolean isSignupSuccessful() {
-        return signupSuccess;
-    }
+
+   
 
     public String getFeedbackMessage() {
         return feedbackMessage;
