@@ -102,18 +102,24 @@ public class Loginstep {
 
         @When("user tries to login")
         public void userTriesToLogin() {
-           
+           // This method is intentionally left empty because the actual login process 
+    // is handled by the `passwordIs` method, which verifies the password and sets loginSuccess accordingly.
+   
         }
 
         @When("admin tries to login")
         public void adminTriesToLogin() {
-            
+            // This method is intentionally left empty because the actual login process 
+    // is handled by the `passwordIs` method, which checks the password and sets loginSuccess accordingly.
+  
         }
 
         @When("owner tries to login")
         public void ownerTriesToLogin() {
-            
-        }
+             // This method is intentionally left empty because the actual login process 
+    // is handled by the `passwordIs` method, which checks the password and sets loginSuccess accordingly.
+}
+        
 
         @When("supplier tries to login")
         public void supplierTriesToLogin() {
