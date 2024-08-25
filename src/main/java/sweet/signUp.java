@@ -11,7 +11,7 @@ public class signUp {
     private String feedbackMessage = "";
 
     public signUp() {
-        this.registeredUsers = new HashSet<>(); // To store registered usernames
+        this.registeredUsers = new HashSet<>(); 
     }
 
     public boolean theUserIsNotSignedUp(String username) {
@@ -27,23 +27,22 @@ public class signUp {
         }
     }
 
-   public void whenUserEntersUsernameAndPassword(String username, String password) {
-    this.setUsername(username);
-    if (registeredUsers.contains(username)) {
-        signupSuccess = false;
-        feedbackMessage = "Sign up failed: username already exists";
-    } else {
-        registeredUsers.add(username);  // Register the new user
-        signupSuccess = true;
-        feedbackMessage = "Sign up successful";
-    }
+    public void whenUserEntersUsernameAndPassword(String username) {
+        this.setUsername(username);
+        if (registeredUsers.contains(username)) {
+            signupSuccess = false;
+            feedbackMessage = "Sign up failed: username already exists";
+        } else {
+            registeredUsers.add(username);  // Register the new user
+            signupSuccess = true;
+            feedbackMessage = "Sign up successful";
+        }
 
-  
-    if (feedbackMessage.isEmpty()) {
-        feedbackMessage = "No feedback";
+       
+        if (feedbackMessage == null) {
+            feedbackMessage = "No feedback";
+        }
     }
-}
-
 
     public boolean isSignupSuccessful() {
         return signupSuccess;
